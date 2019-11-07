@@ -1,0 +1,330 @@
+/**
+ * Layout of login Page
+ *
+ * Layout da página de login
+ *
+ * @version    1.0.0
+ * @package    VocatioTelecom
+ * @subpackage css
+ * @author     Alcindo Schleder <alcindoschleder@gmail.com>
+ *
+ */
+
+/* =============================================================
+GENERAL STYLES
+============================================================ */
+html {
+    font-size: 16px;
+}
+body {
+    font-family: 'ABeeZee', sans-serif;
+    color: #000;
+    background-color: #fff;
+    font-size: 1em;
+    text-align: center;
+    background-image: -webkit-linear-gradient(270deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)), url("../../img/bg_login.jpg");
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)), url("../../img/bg_login.jpg");
+    background-position: 0px 0px, 0px 0px;
+    background-size: auto, cover;
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    height: 100vh;
+    width: 100vw;
+}
+section {
+    padding: 0;
+    margin: 0;
+}
+aside {
+    padding: 0;
+    margin: 0;
+}
+footer {
+    padding: 0;
+    margin: 0;
+}
+h3 {
+    font-size: 1rem;
+}
+h4 {
+    font-size: 0.8rem;
+}
+/* Hotfix for Bootstrap v4.0.0-alpha.6 */
+.bootstrap-select.btn-group .dropdown-menu.inner {
+  display: block;
+}
+/*
+Make bootstrap-select work with bootstrap 4 see:
+https://github.com/silviomoreto/bootstrap-select/issues/1135
+*/
+.dropdown-toggle.btn-default {
+  color: #292b2c;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.bootstrap-select.show>.dropdown-menu>.dropdown-menu {
+  display: block;
+}
+
+.bootstrap-select > .dropdown-menu > .dropdown-menu li.hidden{
+  display:none;
+}
+
+.bootstrap-select > .dropdown-menu > .dropdown-menu li a{
+  display: block;
+  width: 100%;
+  padding: 3px 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #292b2c;
+  text-align: inherit;
+  white-space: nowrap;
+  background: 0 0;
+  border: 0;
+}
+
+.dropdown-menu > li.active > a {
+  color: #fff !important;
+  background-color: #337ab7 !important;
+}
+
+.bootstrap-select .check-mark::after {
+  content: "✓";
+}
+
+.bootstrap-select button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Make filled out selects be the same size as empty selects */
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+  display: inline !important;
+}
+
+
+.font-zero {
+    font-size: 0;
+}
+.font-dstk {
+    font-size: 1rem;
+    font-weight: bold;
+}
+.text-cond {
+    font-size: 0.8rem;
+}
+#show-form, #hide-form {
+    cursor: pointer;
+}
+#show-form {
+    margin-top: 1.5rem;
+}
+#hide-form {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+.partners {
+    margin-top: 5vh;
+}
+.social-login {
+    padding: 2px;
+    margin-bottom: 10px;
+    font-size: 1.35rem;
+}
+.social-login a {
+    width: 100%;
+    display: inline;
+    color: #fff;
+}
+.social-login a i {
+    float: left;
+    font-size: 1.5rem;
+}
+.btn-facebook {
+    background-color: #3b5998;
+    color: #fff;
+    display: block;
+    width: 100%;
+}
+.btn-facebook a i {
+    padding-top: 7px;
+    padding-left: 14px;
+    padding-right: 2px;
+    background-color: #fff;
+    color: #3b5998;
+}
+.btn-twitter {
+    background-color: #0082f3;
+    color: #fff;
+    display: block;
+    width: 100%;
+}
+.btn-twitter a i {
+    padding-top: 5px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 3px;
+    background-color: #fff;
+    color: #0082f3;
+}
+.full-border {
+    border: 1px solid purple;
+}
+form .required {
+    color: red;
+}
+form-title {
+    padding: 0.8rem;
+}
+.header-title {
+    width:100vw;
+    height:100vh;
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-top:-50vh;
+    margin-left:-50vw;
+}
+.data-link {
+    cursor: pointer;
+}
+.carousel-item.active,
+.carousel-item-next,
+.carousel-item-prev {
+  display: block;
+}
+.page-media {
+    height: 0%;
+    width: 100%;
+}
+.media-text {
+    background-color: #000;
+    opacity: 0.6;
+    padding: 2px;
+}
+.scroll-top-wrapper {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    text-align: center;
+    z-index: 99999999;
+    background-color: rgba(77, 77, 77, 0.5);
+    color: #eeeeee;
+    width: 50px;
+    height: 48px;
+    line-height: 48px;
+    right: 30px;
+    bottom: 30px;
+    padding-top: 2px;
+    border: 1px outset #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+.scroll-top-wrapper:hover {
+    background-color: rgba(88, 88, 88, 0.5);
+}
+.scroll-top-wrapper.show {
+    visibility:visible;
+    cursor:pointer;
+    opacity: 1.0;
+}
+.scroll-top-wrapper i.fa {
+    line-height: inherit;
+}
+
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #252525;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+}
+
+@media (min-width:500px){
+  .modal-content {
+    width: 50% !important;
+  }
+  .printscreen_exception {
+    max-width: 360px !important;
+  }
+}
+
+
+#close_button {
+  position: absolute;
+  pointer-events: auto;
+  padding: 5px;
+  background-color: black;
+  color: white;
+  top: 0;
+  right: 0;
+}
+
+#modal_title {
+  font-size: 1.5rem;
+}
+
+.btn-facebook, .btn-twitter {
+  padding: 8px 8px;
+  font-family: 'Lato';
+  margin: 10px 0;
+}
+
+.fa-facebook-f:before, .fa-facebook:before {
+  position: relative;
+  top: -2px;
+  right: 5px;
+}
+
+#logo_section {
+  box-shadow: 0 1px 39px -20px #000;
+}
+
+#user_call {
+  font-family: Lato, sans-serif;
+  font-weight: 400;
+  text-align: center;
+  line-height: 2.25rem;
+  font-size: 1.5rem;
+}
+
+.social-login-section {
+  font-family: 'Lato';
+  font-weight: lighter !important;
+}
+
+#facebook_connect, #twitter_connect {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.partners-title {
+  font-family: 'Lato';
+}
+
+#wifi_icon {
+  margin-top: 2.5rem;
+}

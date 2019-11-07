@@ -1,0 +1,320 @@
+/**
+ * Common CSS3 Classes.
+ *
+ * Classes CSS comuns a todos os projetos do sistema
+ *
+ * @version    1.0.0
+ * @package    Agencie.me
+ * @subpackage css
+ * @author     Alcindo Schleder <alcindoschleder@gmail.com>
+ *
+ */
+
+/*---------------------
+   1) General definitions
+  ---------------------*/
+aside, article {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.circle {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+.round {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+.round-top {
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    -ms-border-radius: 5px 5px 0 0;
+    -o-border-radius: 5px 5px 0 0;
+}
+.round-left {
+    border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    -ms-border-radius: 5px 0 0 5px;
+    -o-border-radius: 5px 0 0 5px;
+}
+.round-right {
+    border-radius: 0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+    -moz-border-radius:  0 5px 5px 0;
+    -ms-border-radius:  0 5px 5px 0;
+    -o-border-radius:  0 5px 5px 0;
+}
+.round-bottom {
+    border-radius: 0 0 5px 5px;
+    -webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    -ms-border-radius: 0 0 5px 5px;
+    -o-border-radius: 0 0 5px 5px;
+}
+.shadow {
+    -webkit-box-shadow: 0px 0px 5px 3px #CCC;
+    -moz-box-shadow: 0px 0px 5px 3px #CCC;
+    box-shadow: 0px 0px 5px 3px #CCC; /* For IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#CCCCCC')"; /* For IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength = 5, Direction = 135, Color = '#CCCCCC');
+}
+.text-shadow-outset {
+    text-shadow: -1px -1px #FFF, 1px 1px #333;
+}
+.text-shadow-inset {
+    text-shadow: -1px -1px #333, 1px 1px #FFF;
+}
+.text-shadow-high {
+    text-shadow: -1px -1px #333, 1px 1px #000, #000 0.1em 0.1em 0.2em;
+}
+.btn-flat {
+    border: 1px solid;
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    -o-box-shadow: none;
+}
+.page {
+    display: none;
+}
+
+/*---------------------
+   2) Input Icons styles
+  ---------------------*/
+
+.input-icon {
+    position: relative;
+    left: 0;
+    padding: 0;
+    margin: 0;
+}
+.input-icon .form-control,
+.input-icon .form-control-sm {
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid #CCCCCC;
+    border-left: 1px solid #45B6AF;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    -o-box-shadow: none;
+    outline: none;
+    width: 98%;
+    background-color: transparent;
+}
+.input-icon > .form-control, .input-icon > .form-control-sm {
+    padding-left: 33px;
+}
+.input-group .input-icon .form-control, .input-group .input-icon .form-control-sm {
+    -webkit-border-radius: 4px 0 0 4px;
+    -moz-border-radius: 4px 0 0 4px;
+    -ms-border-radius: 4px 0 0 4px;
+    -o-border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
+}
+.input-icon > i {
+    color: #ddd;
+    display: block;
+    position: absolute;
+    margin: 5px 10px 3px 10px;
+    z-index: 3;
+    width: 1rem;
+    font-weight: normal;
+    font-size: 1rem;
+    text-align: center;
+}
+.modal .input-icon > i {
+    z-index: 10055;
+}
+.has-success .input-icon > i {
+    color: #45B6AF;
+}
+.has-warning .input-icon > i {
+    color: #dfba49;
+}
+.has-info .input-icon > i {
+    color: #89C4F4;
+}
+.has-error .input-icon > i {
+    color: #F3565D;
+}
+.input-icon.right {
+    left: auto;
+    right: 0;
+}
+.input-icon.right > .form-control, 
+.input-icon.right > .form-control-sm {
+    padding-right: 33px;
+    padding-left: 12px;
+}
+.input-group .input-icon.right > .form-control, 
+.input-group .input-icon.right > .form-control-sm {
+    -webkit-border-radius: 0 4px 4px 0;
+    -moz-border-radius: 0 4px 4px 0;
+    -ms-border-radius: 0 4px 4px 0;
+    -o-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+}
+.input-icon.right > i {
+    right: 8px;
+    float: right;
+}
+.input-icon.input-icon-lg > i {
+    margin-top: 16px;
+}
+.input-icon.input-icon-sm > i {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+/*---------------------
+   3) Icons spinning
+  ---------------------*/
+
+i.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+/*---------------------
+  4) Box Message layout
+  ---------------------*/
+
+.pageMessage {
+    width: 100%
+}
+.pageMessage.alert.alert-danger,
+.pageMessage.alert.alert-info,
+.pageMessage.alert.alert-warning,
+.pageMessage.alert.alert-success {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.pageMessage header {
+    padding: 0;
+    margin: -1px;
+    background-color: #0275d8;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    -ms-border-radius: 5px 5px 0 0;
+    -o-border-radius: 5px 5px 0 0;
+}
+.pageMessage header,
+.pageMessage header > *,
+.pageMessage header > * > h6 {
+    color: white;
+    font-weight: normal;
+}
+.pageMessage header .header-message {
+    margin-top: 3px;
+    margin-bottom: -5px;
+    width: 90%;
+    text-align: center;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+.pageMessage header .close-message:hover {
+    cursor: pointer;
+}
+.pageMessage header .close-message-box {
+    padding: 0;
+    margin: 0;
+    font-size: 0.7rem;
+}
+.pageMessage .box-data {
+    display: table;
+    width: 100%
+}
+.pageMessage .btn-circle {
+    padding: 0.8em;
+    margin: 0;
+    border-width: 2px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+.pageMessage .box-logo {
+    padding: 10px;
+    font-size: 2.5em;
+    width: 5%;
+}
+.pageMessage .box-logo > *:hover {
+    color: #fff !important;
+}
+.pageMessage .box-message {
+    padding: 5px;
+    text-align: center;
+    width: 95%;
+    white-space: pre-line;
+}
+.pageMessage small {
+    width: 6%;
+    font-size: 0.6rem;
+    margin-bottom: 5px;
+}
+.pageMessage small .timer-count {
+    font-weight: bold;
+}
+
+/*---------------------
+   5) Info Text Layout
+  ---------------------*/
+
+.boxText {
+    border: 1px solid #000;
+    padding: 10px;
+    margin: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #000;
+    font-size: 1em;
+    display: none;
+    text-align: center;
+}
+.boxText.text-muted {
+    background-color: rgba(129, 138, 145, 0.3);
+    border-color: #818a91;
+}
+.boxText.text-primary {
+    background-color: rgba(2, 117, 216, 0.3);   
+    border-color: #0275d8;
+}
+.boxText.text-success {
+    background-color: rgba(92, 184, 92, 0.3);   
+    border-color: #5cb85c;
+}
+.boxText.text-info {
+    background-color: rgba(91, 192, 222, 0.3);   
+    border-color: #5bc0de;
+}
+.boxText.text-warning {
+    background-color: rgba(240, 173, 78, 0.3);   
+    border-color: #f0ad4e;
+}
+.boxText.text-danger {
+    background-color: rgba(217, 83, 79, 0.3);   
+    border-color: #d9534f;
+}

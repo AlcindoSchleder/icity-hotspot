@@ -1,0 +1,704 @@
+<?php
+// https://www.vocatiotelecom.com.br/login/?ga_ssid=mikrotik-voktio-lepetitclos&ga_ap_mac=6C-3B-6B-04-3C-39&ga_nas_id=%5C204&ga_srvr=192.168.102.1%3A80&ga_cmac=1C%3A65%3A9D%3AC3%3A54%3A23&ga_cip=192.168.102.205&ga_loc=Gramado-RS&ga_Qv=%5C277%5C112%5C361%5C221%5C330%5C170%5C011%5C344%5C016%5C037%5C201%5C003%5C100%5C302%5C200%5C233&link-login=http%3A%2F%2F192.168.102.1%2Flogin&link-orig=&link-login-only=http%3A%2F%2F192.168.102.1%2Flogin&link-orig-esc=
+include('./include/config.inc.php');
+/**
+ * LoginPage class
+ * 
+ * Classe que auxilia no display da página de pré-login aos usuários
+ *
+ * @version    1.0.0
+ * @package    VocatioTelecom
+ * @subpackage Login
+ * @author     Alcindo Schleder <alcindoschleder@gmail.com> 
+ * @copyright (c) date('Y'), Alcindo Schleder
+ * 
+ */
+class LoginPage extends Base {
+    const TL_IMAGE = 0;
+    const TL_VIDEO = 1;
+    const FN_PRELOGIN = './templates/prelogin.tpl';
+    const SQL_CUSTOMERS = "select Adv.dsc_title, Adv.qtd_media, Adv.time_total, Adv.flag_tlogin, \n"
+                        . "       Adv.pk_customers_adverts, Amd.type_media, Amd.path_media, \n"
+                        . "       Amd.duration, Amd.dsc_local, Cst.* \n"
+                        . "  from vw_customers Cst, customers_adverts Adv \n"
+                        . "  left outer join customers_adverts_medias Amd \n"
+                        . "    on Amd.fk_customers = Adv.fk_customers \n"
+                        . "   and Amd.fk_customers_adverts = Adv.pk_customers_adverts \n"
+                        . " where Adv.fk_customers = Cst.pk_registers \n"
+                        . "   and Adv.flag_tlogin = 0 \n"
+                        . "   and Cst.flag_block = 0 \n"
+                        . "   and Cst.flag_active = 1";  
+    const CAROUSEL_SPL = "                    <div id='preLoginImages' class='carousel slide' data-ride='carousel'>\n"
+                       . "                        <div class='carousel-inner' role='listbox'>\n"
+                       . "{#ListImages#}"
+                       . "                        </div>\n"
+                       . "                    </div>\n";
+    const IMAGE_SAMPLE = "                            <div class='carousel-item active'>\n" 
+                       . "                                <img class='d-block img-fluid' src='#path_media#' alt='#dsc_title#'>\n" 
+                       . "                                <div class='carousel-caption d-block media-text'>\n"
+                       . "                                    <h4>#dsc_title#</h4>\n"
+                       . "                                    <p>#dsc_local#</p>\n"
+                       . "                                </div>\n"
+                       . "                            </div>\n";
+    const VIDEO_SAMPLE = "                    <div class='page page-media pre-login-videos'>\n"
+                       . "                        <video autoplay controls='false'\n"
+                       . "                               onerror='LoginComponents.mediaEvents(event);'\n"
+                       . "                               onended='LoginComponents.mediaEvents(event);'>\n"
+                       . "                            <source src='https://youtu.be/myMWce31r9o' type='video/mp4'></source>\n"
+                       . "                        </video>\n"
+                       . "                    </div>\n";
+    
+    private $flagShowAdverts = false;
+    private $macAP           = false;
+    private $macClient       = false;
+    private $localization    = false;
+    private $descr           = false;
+    /**
+     * Read Object
+     * @var Read object
+     */
+    private $readData        = false;
+    private $htmlData        = false;
+    private $dscTitle        = false;
+    private $qtdMedia        = 0;
+    private $timeTotal       = 0;
+    private $flagTMedia      = self::TL_IMAGE;
+    private $flagLogged      = false;
+    private $DBData          = null;
+    
+    public function __construct(array $data = null) {
+        parent::__construct();
+        $this->localization = null;
+        $this->descr = null;
+        $this->flagShowAdverts = $this->checkTemplate();
+        $this->DBData = $data;
+        $this->macAP = (($data) && is_array($data) && (isset($data['ga_ap_mac'])) ? $data['ga_ap_mac'] : null);
+        $this->macClient = (($data) && is_array($data) && (isset($data['ga_cmac'])) ? $data['ga_cmac'] : null);
+        if ($this->macAP):
+            $this->getLocalizationFromDB($this->macAP);
+        endif;
+    }
+    public function __destruct() {
+        $this->htmlData = null;
+        $this->readData = null;
+        parent::__destruct();
+    }
+    /**
+     * Função que verifica se tem alguma publicidade para ser mostrada no login
+     * @return boolean
+     */
+    private function checkTemplate() {
+        $res = false;
+        if (file_exists(self::FN_PRELOGIN)):
+           
+        endif;
+        return $res;
+    }
+    private function generateImageHTML() {
+        $htmlImg = '';
+        $htmlArr = array();
+        for ($aIdx = 0; $aIdx < count($this->result['data']); $aIdx++) {
+            $htmlArr['dsc_title']  = $this->result['data'][$aIdx]['dsc_title'];
+            $htmlArr['path_media'] = $this->result['data'][$aIdx]['path_media'];
+            $htmlArr['dsc_local']  = $this->result['data'][$aIdx]['dsc_local'];
+            $keys = explode('&', '#' . implode("#&#", array_keys($htmlArr)) . '#');
+            $htmlImg .= str_replace($keys, array_values($htmlArr), self::IMAGE_SAMPLE);
+        }
+        $this->htmlData = str_replace(array("{#ListImages#}", "#time_total#"), array($htmlImg, $this->result['data'][0]['time_total']), self::CAROUSEL_SPL);
+    }
+    private function generateVideoHTML() {
+        return "<div>Emconstrução</div>\n";
+    }
+    private function generateHTML() {
+        if ($this->flagTMedia == self::TL_IMAGE):
+            $this->generateImageHTML();
+        else:
+            $this->generateVideoHTML();
+        endif;
+    }
+    /*
+     * Função que le o banco de dados e gerar o HTML a ser mostrada na página
+     */
+    private function getPreLoginCustomers() {
+        $R = false;
+        $this->readData = new Read();
+        $this->readData->FullRead(self::SQL_CUSTOMERS);
+        $this->result = $this->readData->getResult();
+        $this->readData = null;
+        if ($this->result['code'] == STT_OK):
+            $R = true;
+            $this->dscTitle   = $this->result['data'][0]['dsc_title'];
+            $this->qtdMedia   = $this->result['data'][0]['qtd_media'];
+            $this->timeTotal  = $this->result['data'][0]['time_total'];
+            $this->flagTMedia = ((preg_match('/^image/', $this->result['data'][0]['type_media'])) ? self::TL_IMAGE : self::TL_VIDEO);
+        endif;
+        return $R;
+    }
+    /**
+     * Função que verifica se o ap que fez login está cadastrado
+     * @param string $macAP
+     */
+    private function getLocalizationFromDB(string $macAP) {
+        $this->macAP = $macAP;
+        $strQry = "select * from vw_aps_locals where decryptField(mac_addr, '" . VOCATIO_KEY . "') = :macAddr";
+        $this->readData = new Read();
+        $params = "macAddr={$this->macAP}";
+        $this->readData->FullRead($strQry, $params);
+        $res = $this->readData->getResult();
+        $this->readData = null;
+        if ($res['code'] == STT_OK):
+            $this->localization = "{$res['data'][0]['dsc_cities']} - {$res['data'][0]['fk_states']}";
+            $this->descr = $res['data'][0]['dsc_local'];
+        else:
+            $this->setResultMessage($res['code'], "getLocalizationFromDB: {$res['message']}" . EOL . "SQL: {$res['sql']}". EOL . "Params: {$params}");
+            throw new Exception('Erro: Leitura do banco de dados sem sucesso' . EOL . $this->result['message']);
+        endif;
+    }
+    private function saveConnection() {
+        $save = new Create();
+        $data = array(
+            'pk_users_conected' => hash_hmac('sha256', $this->DBData['pk_visitors'], VOCATIO_KEY),
+            'fk_visitors' => $this->DBData['pk_visitors'],
+            'fk_visitors_logins' => $this->DBData['pk_visitors_logins'],
+            'fk_visitors_devices' => $this->DBData['pk_visitors_devices'],
+            'date_in' => date(FDT_DB),
+            'ap_ip_user' => ((($this->DBData) && (isset($this->DBData['ga_cip']))) ? $this->DBData['ga_cip'] : '0.0.0.0'),
+            'ap_mac_user' => (($this->macClient) ? $this->macClient : '00-00-00-00-00'),
+            'ap_ip' => ((($this->DBData) && isset($this->DBData['ga_srvr'])) ? $this->DBData['ga_srvr'] : '0.0.0.0'),
+            'ap_mac' => (($this->macAP) ? $this->macAP : '00-00-00-00-00'),
+            'ap_ssid' => ((($this->DBData) && isset($this->DBData['ga_ssid'])) ? $this->DBData['ga_ssid'] : 'none'),
+            'ap_nas_id' => ((($this->DBData) && isset($this->DBData['ap_nas_id'])) ? $this->DBData['ap_nas_id'] : 'none'),
+            'ap_location' => (($this->localization) ? $this->localization : 'none'),
+            'ap_qv' => ((($this->DBData) && isset($this->DBData['ga_Qv'])) ? $this->DBData['ga_Qv'] : 'none')
+        );
+        $save->ExeCreate('users_connected', $data);
+        $data = $save->getResult();
+        // select * from users_connected where fk_visitors_devices = '' order by date_in desc limit 0,1
+        $save = null;
+    }
+    public function hasPreLoginMedia() {
+        return $this->getPreLoginCustomers();
+    }
+    /**
+     * Função que informa se tem publicidades para mostrar no pré-login dos usuários
+     * @return Boolean
+     */
+    public function showAdverts() {
+        return $this->flagShowAdverts;
+    }
+    /**
+     * Função que retorna o município da plataforma
+     * @param string $macAP
+     * @return string
+     */
+    public function getLocalization(string $macAP = null) {
+        if ($macAP):
+            if (!$this->localization):
+                $this->getLocalizationFromDB($macAP);
+            endif;
+        endif;
+        return (($this->localization) ? $this->localization : 'unknow');
+    }
+    /**
+     * Função que retorna nome do AP para a plataforma
+     * @param string $macAP
+     * @return string
+     */
+    public function getApDescr(string $macAP = null) {
+        if ($macAP):
+            if (!$this->descr):
+                $this->getLocalizationFromDB($macAP);
+            endif;
+        endif;
+        return (($this->descr) ? $this->descr : 'unknow');
+    }
+    public function getMacAP() {
+        return $this->macAP;
+    }
+    public function getDuration() {
+        return $this->timeTotal;
+    }
+    public function getMedia() {
+        $this->generateHtml();
+        return $this->htmlData;
+    }
+    public function getFlagLogged() {
+        return $this->flagLogged;
+    }
+    public function getUserFromMacDevice() {
+        $this->flagLogged = false;
+        $this->DBData = HandleDBProfile::getUserViewData('visitors_devices', "mac_device={$this->macClient}");
+        $code = $this->DBData['code'];
+        if (($code == STT_OK) && ($this->DBData['data'][0]['expire_token'] < date(FDT_DB))):
+            $this->DBData = $this->DBData['data'][0];
+            $this->saveConnection();
+            $this->flagLogged = true;
+        endif;
+        return ($code == STT_OK);
+    }
+    public function qryUserData() {
+        return '&' . http_build_query($this->DBData);
+    }
+}
+// constante que mantém o endereço para o botão de login
+const SOCIAL_LOGIN = SEC_HOME . '/login/handle_login.php';
+
+// extrai qualquer código malicioso da requisição inicial da chamada ao index.php
+$init = new InitPage(filter_input_array(INPUT_POST), filter_input_array(INPUT_GET));
+$init->setFilter(SocialLogin::getFilterUserData());
+$req = $init->getResult();
+$init = null;
+// inicializa todas as vairáveis locais
+extract(SocialLogin::getInitialUserData());
+$url = '';
+
+// start a new session if not exists
+if(!session_id()):
+    session_start();
+endif;
+
+// set url to login button
+if (($req['code'] == STT_OK) && (isset($req['request']['ga_Qv']))):
+    $req['request']['ga_cmac']   = str_replace(':', '-', $req['request']['ga_cmac']);
+    $req['request']['ga_ap_mac'] = str_replace(':', '-', $req['request']['ga_ap_mac']);
+    // sobrescreve as variáveis locais com os valores do array $req['request']
+    extract($req['request'], EXTR_OVERWRITE);
+    // constroi o link para os botões de login
+    $ga_cmac = str_replace(':', '-', $ga_cmac);
+    $url = http_build_query(compact(array_keys(SocialLogin::getArrUserConnection())));
+endif;
+Base::setLogData($req, 'Mostrando os dados recebidos');
+//$ga_ap_mac = '00:04:56:BF:71:00';
+$_SESSION['iCity'] = array(
+    'visitorsDB' => array(
+        'pk_visitors' => '',
+        'ga_ssid' => $ga_ssid,
+        'ga_ap_mac' => $ga_ap_mac,
+        'ga_nas_id' => $ga_nas_id,
+        'ga_cmac' => $ga_cmac,
+        'ga_cip' => $ga_cip,
+        'ap_loc' => $ap_loc,
+        'ga_srvr' => $ga_srvr,
+        'ga_Qv' => $ga_Qv,
+        'is_Saved' => '0',
+        'is_callback' => '0',
+        'has_profile' => '0'
+    )
+);
+$S = "[Cidades Interativas: Início do cadastro ({$ga_cip}:{$ga_cmac}) - " . date('j/n/Y H:i:s') . "]\n";
+Base::setLogData(null, $S);
+try {
+    $preLogin = new LoginPage($req['request']);
+    if ($preLogin->getUserFromMacDevice()):
+        $url .= $preLogin->qryUserData();
+    endif;
+} catch (Exception $e) {
+    echo($e->getMessage());
+    exit(0);
+}
+?>
+<!doctype html>
+<html lang="pt-Br">
+    <head>
+        <meta charset="utf-8" />
+        <!--[if IE]>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="description" content="Vocatio Telecom - Portal das Comunicações" />
+        <meta name="author" content="Alcindo Schleder" />
+        <!--
+        <?php
+        $Link = new Link;
+        $Link->getTags();
+        ?>
+        -->
+        <title>Vocatio Telecom</title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link href="./templates/fonts/ion-icons/ionicons.min.css" rel="stylesheet" type="text/css" /> <!-- ionIcons font images -->
+        <link href="./templates/fonts/lato/lato.css" rel="stylesheet" type="text/css" />
+        <link href="./templates/css/components/bootstrap-messagebox/bootstrap.messagebox.css" rel="stylesheet" type="text/css"/>
+        <link href="./templates/css/components/bootstrap-selectpicker/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
+        <link href="./templates/css/global/common.css" type="text/css" rel="stylesheet" />
+        <link href="./templates/css/layout/login.css" type="text/css" rel="stylesheet" /> <!-- custom CSS -->
+        <link rel="shortcut icon" href="./favicon.png"/>
+        <!-- Embebed Fonts
+        <link href="https://fonts.googleapis.com/css?family=ABeeZee|Josefin+Sans|Wire+One" rel="stylesheet">
+        <!-- HTML5 Shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="main-section container-fluid">
+            <!-- HEADER SECTION START -->
+            <header class="header-page">
+                <div class="row" id="logo_section">
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pul-left">
+                        <img src="./templates/img/logo.png" style="width:55%;"/>
+                    </div>
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                </div>
+                <div id="wifi_icon" class="row">
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pul-left">
+                        <img src="./templates/img/wifi.png" style="width: 50px;">
+                    </div>
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left">
+                        <h2 id="user_call">
+                            <span id="title-header">Cidades Interativas - <?php echo($preLogin->getLocalization()); ?></span><br />
+                        </h2>
+                        <strong>Free Internet - <?php echo($preLogin->getApDescr()); ?></strong>
+                    </div>
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                </div>
+            </header>
+            <!-- HEADER SECTION END -->
+            <div class='container login'>
+                <section class="text-center pre-login-adverts" align='center' data-show="<?php echo((($preLogin->hasPreLoginMedia()) ? 1 : 0)); ?>" duration='<?php echo($preLogin->getDuration()); ?>'>
+                    <div class="row" id="logo_section">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pul-left">
+<?php
+echo($preLogin->getMedia());
+?>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+                    <div class="btn btn-primary btn-continue-media round">
+                        tempo decorrido:&nbsp;<span class="time-media">0</span>&nbsp;de&nbsp;<?php echo($preLogin->getDuration() . "\n"); ?>
+                    </div>
+                </section>
+                <section class="text-center page social-login-section" align='center'>
+                    <div class="row text-center">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left">
+                            <h3 id="second_call">Login com Redes Sociais</h3>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pul-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left d-block">
+                            <a class="btn" href="<?php echo(SOCIAL_LOGIN . '?app_tp=facebook&is_logged=' . $preLogin->getFlagLogged() . "&{$url}"); ?>" id="btn-facebook">
+                                <img data-toggle="tooltip" data-placement="top" title='Login com o Facebook' class="img-fluid" alt="login with facebook" src="./templates/img/loginFacebook.png" />
+                            </a>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+<!--
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 col-xs-offset-0"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 btn-login">
+                            <div class="round btn-twitter social-login">
+                                <a class="btn" href="<?php echo(SOCIAL_LOGIN . '?app_tp=twitter&' . $url); ?>" id="login_twitter">
+                                    <i class="round fa fa-twitter"></i>
+                                    <span id="twitter_connect">Conectar com o Twitter</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 col-xs-offset-0"></div>
+                    </div>
+<!--
+                                <a href="<?php echo(SOCIAL_LOGIN . '?app_tp=twitter&' . $url); ?>" id="login_twitter">
+                                    <i class="btn btn-info-outline fa fa-twitter" title="Login com Twitter" data-toggle="tooltip" data-placement="bottom"></i>
+                                </a>
+                                <a href="<?php echo(SOCIAL_LOGIN . '?app_tp=instagram&' . $url); ?>" id="login_instagram">
+                                    <i class="btn btn-warning-outline fa fa-instagram" title="Login com Instagram" data-toggle="tooltip" data-placement="bottom"></i>
+                                </a>
+                                <a href="<?php echo(SOCIAL_LOGIN . '?app_tp=youtube&' . $url); ?>" id="login_youtube">
+                                    <i class="btn btn-danger-outline fa fa-youtube" title="Login com YouTube" data-toggle="tooltip" data-placement="bottom"></i>
+                                </a>
+                                <a href="<?php echo(SOCIAL_LOGIN . '?app_tp=linkedin&' . $url); ?>" id="login_linkedin">
+                                    <i class="btn btn-primary-outline fa fa-linkedin" title="Login com LinkedIn" data-toggle="tooltip" data-placement="bottom"></i>
+                                </a>
+-->
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pul-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 text-cond pull-left">
+                            <input type="checkbox" class="form-control-sm" name="accept_terms" id="accept_terms" checked value="1"/>
+                            <label id='acceptTerms' class='text-primary' for="accept_terms"><i class="fa fa-lock">&nbsp;</i>Li e Aceito.&nbsp;&nbsp;</label>
+                            Ao clicar no ícone da Rede Social escolhida, você declara estar ciente e de acordo com os <a href="https://www.vocatiotelecom.com.br/politica_de_privacidade_e_termos_de_uso.html" target="_blank"><strong>Termos de Uso</strong></a> e com a <a href="https://www.vocatiotelecom.com.br/politica_de_privacidade_e_termos_de_uso.html" target="_blank"><strong>Política de Privacidade</strong></a>.
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left">
+                            <div id="show-form" class="badge badge-pill badge-info">Login com Cadastro Manual</div>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+                </section>
+                <!-- FORM LOGIN SECTION START -->
+                <section class="page form-section" align="center">
+                    <div class="row text-center">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left">
+                            <div id="hide-form" class="badge badge-pill badge-info">Login com Redes Sociais</div>
+                            <h3 id="second_call">Login com Cadastro Manual</h3>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+                    <div class="row text-left">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left">
+                            <form id="form-extlogin" data-action="https://www.vocatiotelecom.com.br/login/handle_login.php" method="post" >
+                                <input type="hidden" id="ga_ssid"       name="ga_ssid"       value="<?php echo($ga_ssid); ?>" />
+                                <input type="hidden" id="ga_ap_mac"     name="ga_ap_mac"     value="<?php echo($ga_ap_mac); ?>" />
+                                <input type="hidden" id="ga_nas_id"     name="ga_nas_id"     value="<?php echo($ga_nas_id); ?>" />
+                                <input type="hidden" id="ga_cmac"       name="ga_cmac"       value="<?php echo($ga_cmac); ?>" />
+                                <input type="hidden" id="ga_cip"        name="ga_cip"        value="<?php echo($ga_cip); ?>" />
+                                <input type="hidden" id="ap_loc"        name="ap_loc"        value="<?php echo($ap_loc); ?>" />
+                                <input type="hidden" id="ga_srvr"       name="ga_srvr"       value="<?php echo($ga_srvr); ?>" />
+                                <input type="hidden" id="ga_Qv"         name="ga_Qv"         value="<?php echo($ga_Qv); ?>" />
+                                <input type="hidden" id="app_tp"        name="app_tp"        value="manual" />
+                                <input type="hidden" id="app_userID"    name="app_userID"    value="123456789012345" />
+                                <input type="hidden" id="is_logged"     name="is_logged"     value="<?php echo($preLogin->getFlagLogged()); $preLogin = null; ?>" />
+                                <div class="form-actions text-center col-12">
+                                    <div id="police-terms" class="row">
+                                        <div class="col-12 text-cond">
+                                            <input type="checkbox" class="form-control-sm" name="accept_terms" id="accept_terms" checked value="1"/>
+                                            <label for="accept_terms"><i class="fa fa-lock">&nbsp;</i>
+                                                Li e Aceito a <a href="https://www.vocatiotelecom.com.br/politica_de_privacidade_e_termos_de_uso.html" target="_blank">Política de Privacidade e Termos de Uso.</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4 pull-left">
+                                        <label class="control-label" for="name_user">Nome: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8 pull-left">
+                                        <div class="input-icon">
+                                            <i class="fa fa-user"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Nome" name="name_user" id="name_user" value="<?php echo($name_user); ?>" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="email_user">e-mail: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-envelope"></i>
+                                            <input type="email" class="form-control-sm" placeholder="email@dominio.com" name="email_user" id="email_user" value="<?php echo($email_user); ?>" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="doc_user">C.P.F.: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-credit-card"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Núm. do C.P.F." name="doc_user" id="doc_user" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="zip_code">CEP: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-envelope"></i>
+                                            <input type="text" class="form-control-sm" placeholder="C.E.P." name="zip_code" id="zip_code" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="fkCountries">País: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-control selectpicker" placeholder="Selecione o País" name="fkCountries" id="fkCountries">
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_country/br.png'></img>  Brasil</span>" value="55" selected>Brasil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="fkStates">Estado: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-control selectpicker" placeholder="Selecione o Estado" name="fkStates" id="fkStates" onchange="javascript:LoginEvents.stateChange();">
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ac.png'></img>  Acre</span>"                value="AC"<?php if ($fkStates == 'AC'): echo(' selected'); endif; ?>>Acre</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/al.png'></img>  Alagoas</span>"             value="AL"<?php if ($fkStates == 'AL'): echo(' selected'); endif; ?>>Alagoas</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ap.png'></img>  Amapá</span>"               value="AP"<?php if ($fkStates == 'AP'): echo(' selected'); endif; ?>>Amapá</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/am.png'></img>  Amazonas</span>"            value="AM"<?php if ($fkStates == 'AM'): echo(' selected'); endif; ?>>Amazonas</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ba.png'></img>  Bahia</span>"               value="BA"<?php if ($fkStates == 'BA'): echo(' selected'); endif; ?>>Bahia</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ce.png'></img>  Ceará</span>"               value="CE"<?php if ($fkStates == 'CE'): echo(' selected'); endif; ?>>Ceará</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/df.png'></img>  Distrito Federal</span>"    value="DF"<?php if ($fkStates == 'DF'): echo(' selected'); endif; ?>>Distrito Federal</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/go.png'></img>  Goiás</span>"               value="GO"<?php if ($fkStates == 'GO'): echo(' selected'); endif; ?>>Goiás</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/es.png'></img>  Espírito Santo</span>"      value="ES"<?php if ($fkStates == 'ES'): echo(' selected'); endif; ?>>Espírito Santo</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ma.png'></img>  Maranhão</span>"            value="MA"<?php if ($fkStates == 'MA'): echo(' selected'); endif; ?>>Maranhão</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/mt.png'></img>  Mato Grosso</span>"         value="MT"<?php if ($fkStates == 'MT'): echo(' selected'); endif; ?>>Mato Grosso</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ms.png'></img>  Mato Grosso do Sul</span>"  value="MS"<?php if ($fkStates == 'MS'): echo(' selected'); endif; ?>>Mato Grosso do Sul</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/mg.png'></img>  Minas Gerais</span>"        value="MG"<?php if ($fkStates == 'MG'): echo(' selected'); endif; ?>>Minas Gerais</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pa.png'></img>  Pará</span>"                value="PA"<?php if ($fkStates == 'PA'): echo(' selected'); endif; ?>>Pará</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pb.png'></img>  Paríba</span>"              value="PB"<?php if ($fkStates == 'PB'): echo(' selected'); endif; ?>>Paraiba</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pr.png'></img>  Paraná</span>"              value="PR"<?php if ($fkStates == 'PR'): echo(' selected'); endif; ?>>Paraná</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pe.png'></img>  Pernambuco</span>"          value="PE"<?php if ($fkStates == 'PE'): echo(' selected'); endif; ?>>Pernambuco</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pi.png'></img>  Piauí</span>"               value="PI"<?php if ($fkStates == 'PI'): echo(' selected'); endif; ?>>Piauí­</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rj.png'></img>  Rio de Janeiro</span>"      value="RJ"<?php if ($fkStates == 'RJ'): echo(' selected'); endif; ?>>Rio de Janeiro</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rn.png'></img>  Rio Grande do Norte</span>" value="RN"<?php if ($fkStates == 'RN'): echo(' selected'); endif; ?>>Rio Grande do Norte</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rs.png'></img>  Rio Grande so Sul</span>"   value="RS"<?php if ($fkStates == 'RS'): echo(' selected'); endif; ?>>Rio Grande do Sul</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ro.png'></img>  Rondônia</span>"            value="RO"<?php if ($fkStates == 'RO'): echo(' selected'); endif; ?>>Rondônia</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rr.png'></img>  Roraima</span>"             value="RR"<?php if ($fkStates == 'RR'): echo(' selected'); endif; ?>>Roraima</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/sp.png'></img>  São Paulo</span>"           value="SP"<?php if ($fkStates == 'SP'): echo(' selected'); endif; ?>>São Paulo</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/sc.png'></img>  Santa Catarina</span>"      value="SC"<?php if ($fkStates == 'SC'): echo(' selected'); endif; ?>>Santa Catarina</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/se.png'></img>  Sergipe</span>"             value="SE"<?php if ($fkStates == 'SE'): echo(' selected'); endif; ?>>Sergipe</option>
+                                            <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/to.png'></img>  Tocantins</span>"           value="TO"<?php if ($fkStates == 'TO'): echo(' selected'); endif; ?>>Tocantins</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="fkCities">Município: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-group selectpicker" data-live-search="true" name="fkCities" id="fkCities">
+<?php
+    $read = new Read;
+    try {
+        $read->ExeRead('cities', "where fk_countries = :fkCountries and fk_states = :fkStates order by dsc_city", "fkCountries=55&fkStates={$fkStates}");
+        $result = $read->getResult();
+        $read = null;
+        if (($result) && ($result['code'] == STT_OK) && (isset($result['data'][0]))):
+            for ($i = 0; $i < count($result['data']); $i++):
+            if ($result['data'][$i]['pk_cities'] == $fkCities):
+                echo('                                                <option data-tokens="'.$result['data'][$i]['dsc_city'].'" value="'.$result['data'][$i]['pk_cities'].'" selected>'.$result['data'][$i]['dsc_city']."</option>\n");
+            else:
+                echo('                                                <option value="'.$result['data'][$i]['pk_cities'].'">'.$result['data'][$i]['dsc_city']."</option>\n");
+            endif;
+            endfor;
+        else:
+            echo("<option value='0'>{$result['message']}</option>");
+        endif;
+    } catch (Exception $e) {
+        echo("<option value='0'><b>Busca dos registros! ({$e->getCode()}).</b><br />{$e->getMessage()}</option>");
+    }
+    $result = null;
+?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="addr_user">Endereço: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-envelope-square"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Endereço" name="addr_user" id="addr_user" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="num_addr">Núm.: <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-envelope"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Número" name="num_addr" id="num_addr" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="cmpl_addr">Complem.:</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-envelope-o"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Complemento do Endereço" name="cmpl_addr" id="cmpl_addr" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <label class="control-label" for="http_addr">WEB.:</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="input-icon">
+                                            <i class="fa fa-globe"></i>
+                                            <input type="text" class="form-control-sm" placeholder="Endereço WEB" name="http_addr" id="http_addr" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" align="center">
+                                  <div class="col-12 text-center">
+                                      <button id="btnLogin" type="submit" class="login-submit-btn btn btn-outline-primary">
+                                          <i class="fa fa-send-o"></i>&nbsp;Login
+                                      </button>
+                                  </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pull-left clearfix"></div>
+                    </div>
+                </section>
+                <!-- FORM LOGIN SECTION END -->
+                <section class="partners">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pul-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pull-left text-center">
+                            <div class="row">
+                                <h4 class="partners-title col-12">
+                                    <span>Parceiros</span>
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <img class="img-fluid" src="./templates/img/LogoVocatioIBMiCity.png" alt="Vocatio Telecom" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+    <!--
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down pul-left"></div>
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-8 col-xs-12 pul-left">
+                            <div id="show-form" class="btn btn-warning-outline text-center">
+                                <i class="fa fa-newspaper-o"></i>
+                                <span id="text-show-form">Fazer Login com Cadastro Manual</span>
+                                <i class="fa fa-newspaper-o"></i>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-2 hidden-xs-down clearfix"></div>
+                    </div>
+    -->
+                </section>
+            </div>
+        </div>
+        <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="./templates/js/components/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="./templates/js/components/bootstrap-selectpicker/bootstrap-select.min.js" type="text/javascript"></script>
+        <script src="./templates/js/components/jquery-mask/js/jquery.mask.min.js" type="text/javascript"></script>
+        <script src="./templates/js/global/constants.js" type="text/javascript"></script>
+        <script src="./templates/js/global/common.js" type="text/javascript"></script>
+        <script src="./templates/js/custom/login.js" type="text/javascript"></script>
+    </body>
+</html>
+<?php
+$preLogin = null;

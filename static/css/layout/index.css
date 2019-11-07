@@ -1,0 +1,500 @@
+/**
+ * Layout of Main Page
+ *
+ * Layout da página principal
+ *
+ * @version    1.0.0
+ * @package    VocatioTelecom
+ * @subpackage css
+ * @author     Alcindo Schleder <alcindoschleder@gmail.com>
+ *
+ */
+
+/* =============================================================
+GENERAL STYLES
+============================================================ */
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: 'ABeeZee', sans-serif;
+    color: #fff;
+    background-color: #000;
+    font-size: 1em;
+/*    background-image: url("http://localhost/vocatio/templates/img/3.jpg");
+    background-size: cover;
+*/
+}
+
+section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+header {
+    padding: 1rem;
+}
+
+header .header-title h3 {
+    padding-top: 1rem;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 3.5rem;
+    border-bottom: 2px #00d3ee solid;
+}
+
+header .header-title span {
+    padding-top: 1rem;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1.8rem;
+}
+
+.pad-bottom {
+    padding-bottom: 3.75rem;
+}
+
+.page {
+    display: none;
+}
+
+.page-header .close-btn {
+    color: #00d3ee;
+    font-size: 3rem;
+    display: block;
+    cursor: pointer;
+}
+
+.page-header h3,
+.page-header .block-title {
+    font-family: 'Wire One', sans-serif;
+    font-size: 3rem;
+    padding-top: 0.5rem;
+}
+
+.page-profile,
+.page-service,
+.page-news,
+.page-contact,
+.page-price,
+.page-promo,
+.customers-profile,
+.page-works,
+.page-team {
+    position: relative;
+    left: 110vw;
+    top: 110vh;
+}
+
+bg-trasp-blue {
+    padding: 1rem;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: rgba(22, 119, 216, 0.30);
+}
+
+form .required {
+    color: red;
+}
+
+.data-link {
+    cursor: pointer;
+}
+/* =============================================================
+CUSTOM BUTTON STYLES
+============================================================ */
+.button-custom {
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    margin: 25px 5px 5px 0px;
+    margin: 5px;
+}
+
+.btn-custom-one {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid rgb(40, 141, 203);
+}
+
+.btn-custom-one:hover {
+    background-color: rgb(40, 141, 203);
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-custom-two {
+    color: #fff;
+    background-color: rgb(40, 141, 203);
+    border: 2px solid rgb(40, 141, 203);
+}
+
+.btn-custom-two:hover {
+    border: 2px solid rgb(40, 141, 203);
+    text-decoration: none;
+    color: #fff;
+    background-color: transparent;
+}
+
+.text-box {
+    width: 100%;
+    padding: 5px;
+    margin: 5px;
+}
+
+.scroll-top-wrapper {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    text-align: center;
+    z-index: 99999999;
+    background-color: rgba(77, 77, 77, 0.5);
+    color: #eeeeee;
+    width: 50px;
+    height: 48px;
+    line-height: 48px;
+    right: 30px;
+    bottom: 30px;
+    padding-top: 2px;
+    border: 1px outset #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+.scroll-top-wrapper:hover {
+    background-color: rgba(88, 88, 88, 0.5);
+}
+.scroll-top-wrapper.show {
+    visibility:visible;
+    cursor:pointer;
+    opacity: 1.0;
+}
+.scroll-top-wrapper i.fa {
+    line-height: inherit;
+}
+
+.status-page {
+    min-height: 20rem;
+}
+.status-page i, .status-page img {
+    min-height: 3rem;
+    font-size: 3rem;
+}
+.status-page .ipUser {
+    font-size: 0.7rem;
+}
+.status-page hr {
+    height: 5px;
+    width: 100%;
+    background-color: rgb(22, 119, 216);
+}
+.owl-carousel .item {
+    width: 10.31rem; 
+    height: 7.93rem;
+}
+/* =============================================================
+Main Menu styles
+============================================================ */
+.header {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 2rem 0 2rem 0;
+}
+
+.header h3 {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 3rem;
+}
+
+.header hr {
+    width: 18rem;
+    border-top: 2px solid rgb(40, 141, 203);
+}
+
+.header .header-logo {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.30);
+    box-sizing: border-box;
+}
+
+.header .header-title {
+    padding: 30px 0 30px 0;
+    box-sizing: border-box;
+    max-width: 80%;
+}
+
+.page-menu {
+    position: relative;
+    visibility: visible;
+}
+
+.page-menu .btn-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-top: 0.75rem;
+}
+
+.page-menu .btn-wrapper {
+    padding: 1rem;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin-bottom: 1rem;
+    background-color: rgba(22, 119, 216, 0.30);
+    cursor: pointer;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    min-height: 11rem;
+    max-width: 99%;
+}
+
+.page-menu .btn-wrapper:hover {
+    background-color: rgba(0, 30, 89, 0.80);
+}
+
+.page-menu .btn-wrapper i {
+    margin: 5px;
+    color: rgb(40, 141, 203);
+    font-size: 3rem;
+}
+
+/*============================
+PROFILE SECTION STYLES
+==============================*/
+.page-profile .partners {
+    border: 1px #00d3ee solid;
+    background-color: rgba(171, 210, 237, 0.8);
+    margin: 20px;
+    padding: 10px;
+}
+
+/*============================
+CONTACT SECTION STYLES
+==============================*/
+
+.page-contact .contact-wrapper {
+    background-color:rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin-bottom: 40px;
+    min-height:200px;
+}
+.page-contact .contact-wrapper h4 {
+    color:rgb(40, 141, 203);
+}
+.footer-div {
+    padding-top:25px;
+}
+.footer-div a,.footer-div a:hover {
+    font-size:10px;
+
+    color:#fff;
+    text-decoration:none;
+}
+
+/*============================
+NEWS SECTION STYLES
+==============================*/
+
+.page-news .posts {
+    padding: 10px;
+    border-bottom: 1px #00d3ee dotted;
+}
+
+.page-news .posts > header {
+    padding: 5px;
+    border-bottom: 2px #E08283 solid;
+    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.page-news .posts .post-body {
+    padding-top: 5px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.page-news .posts .post-body > img {
+    margin-right: 10px;
+}
+
+.page-news .posts > footer {
+    background-color: rgba(50, 50, 50, 0.5);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-size: 0.7rem;
+}
+
+.page-news .posts-highlights {
+}
+
+.page-news .posts-highlights > header {
+    margin-top: 5px;
+    padding-top: 5px;
+    margin-bottom: 5px;
+}
+
+.page-news .posts-highlights .card-header {
+    padding: 0;
+    margin: 0;
+}
+
+.page-news .posts-highlights .card-header > img {
+    padding: 0;
+    margin: 0;
+}
+
+.page-news .posts-highlights .card-block > a {
+    color: #fff;
+    font-weight: bold;
+}
+
+/*============================
+PRICING SECTION STYLES
+==============================*/
+
+.light-pricing {
+    margin-bottom: 30px;
+    margin-top: 50px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    line-height: 30px;
+    cursor: pointer;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.light-pricing:hover {
+    background-color: transparent;
+}
+
+.light-pricing ul {
+    list-style: none;
+    margin: 0;
+    text-align: center;
+    padding-left: 0px;
+}
+
+.light-pricing ul li {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    cursor: pointer;
+}
+
+.light-pricing ul li i {
+    margin-right: 5px;
+}
+
+
+.light-pricing .price {
+    padding: 40px 20px 20px 20px;
+    font-size: 60px;
+    font-weight: 900;
+}
+
+.light-pricing .price small {
+    color: #000;
+    display: block;
+    font-size: 15px;
+    margin-top: 22px;
+}
+
+.light-pricing .type {
+    background-color: rgba(0, 0, 0, 0.40);
+    padding: 30px 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 30px;
+    color: rgb(40, 141, 203);
+}
+
+.light-pricing .pricing-footer {
+    padding: 20px;
+}
+
+.db-attached > .col-lg-4,
+.db-attached > .col-lg-3,
+.db-attached > .col-md-4,
+.db-attached > .col-md-3,
+.db-attached > .col-sm-4,
+.db-attached > .col-sm-3 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.light-pricing.popular {
+    margin-top: 10px;
+}
+
+.light-pricing.popular .price {
+    padding-top: 80px;
+}
+
+
+/*============================
+WORK SECTION STYLES
+==============================*/
+
+#work .caegories a.active {
+    background-color: transparent;
+    color: #fff;
+}
+
+.isotope .isotope-item {
+    -webkit-transition-duration: 0.8s;
+    -moz-transition-duration: 0.8s;
+    transition-duration: 0.8s;
+}
+
+#work .work-wrapper {
+    padding: 10px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin-bottom: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    border: 1px solid rgb(40, 141, 203);
+}
+
+#work .work-wrapper:hover {
+    background-color: transparent;
+    border: 1px solid rgb(40, 141, 203);
+
+    opacity: .80; /* standard: ff gt 1.5, opera, safari */
+    -ms-filter: "alpha(opacity=80)"; /* ie 8 */
+    filter: alpha(opacity=80); /* ie lt 7 */
+    -khtml-opacity: .80; /* safari 1.x */
+    -moz-opacity: .80; /* ff lt 1.5, netscape */
+
+}
+
+#work .work-wrapper h4 {
+    padding-top: 10px;
+}
