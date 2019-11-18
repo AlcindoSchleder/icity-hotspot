@@ -1,1223 +1,177 @@
-<?php
-include_once('./include/config.inc.php');
-/* clear request data */
-$req = filter_input_array(INPUT_POST);
-if (!$req):
-    $req = filter_input_array(INPUT_GET);
-endif;
-$TMPL = '';
-$CODE = false;
-$MESSAGE = false;
-if (($req) && (is_array($req))):
-    $req = array_map('trim', array_map('strip_tags', $req));
-    $filter = array(
-        'tpl' => FILTER_SANITIZE_STRING,
-        'link' => FILTER_SANITIZE_STRING,
-        'code' => FILTER_SANITIZE_STRING,
-        'message' => FILTER_SANITIZE_STRING
-    );
-    $req = filter_var_array($req, $filter);
-    $TMPL = ((isset($req['tpl'])) ? $req['tpl'] : false);
-    $LINK = ((isset($req['link'])) ? $req['link'] : false);
-    $CODE = ((isset($req['code'])) ? $req['code'] : false);
-    $MESSAGE = ((isset($req['message'])) ? $req['message'] : false);
-endif;
-$sess = new Session();
-$startPage = file_exists('./templates/tpl/start.tpl');
-?>
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="utf-8" />
-        <!--[if IE]>
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <![endif]-->
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="description" content="Vocatio Telecom - Portal das Comunicações" />
-        <meta name="author" content="Alcindo Schleder" />
-        <!--
-        <?php
-        $Link = new Link;
-        $Link->getTags();
-        ?>
-        -->
-        <title>Vocatio Telecom</title>
+{%extends 'base/base.html'%}
+{% load staticfiles %}
+    {% block content %}
 
-        <link href="./templates/css/plugins/bootstrap/bootstrap-4.0.0.min.css" rel="stylesheet" /> <!-- bootstrpa 4 required -->
-        <link href="./templates/css/plugins/theter/tether.min.css" rel="stylesheet" type="text/css"/> <!-- bootstrpa 4 required -->
-        <link href="./templates/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" /> <!-- font-awesome font images -->
-        <link href="./templates/fonts/ion-icons/ionicons.min.css" rel="stylesheet" type="text/css" /> <!-- ionIcons font images -->
-        <link href="./templates/css/components/jquery-fancybox/jquery.fancybox.css" rel="stylesheet" /> <!-- FancyBox popUp Styles -->
-        <link href="./templates/css/components/animations/animations.min.css" rel="stylesheet" /> <!-- Styles for viewport animation -->
-        <link href="./templates/css/components/bootstrap-messagebox/bootstrap.messagebox.css" rel="stylesheet" type="text/css"/>
-        <link href="./templates/css/components/bootstrap-verticaltabs/bootstrap.verticaltabs.css" rel="stylesheet" type="text/css"/>
-        <link href="./templates/css/components/bootstrap-selectpicker/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
-        <link href="./templates/css/components/owl-carousel/owl.carousel.css" type="text/css" rel="stylesheet" />
-        <link href="./templates/css/components/owl-carousel/owl.theme.css" type="text/css" rel="stylesheet" />
-        <link href="./templates/css/components/popup/popup.css" type="text/css" rel="stylesheet" />
-        <link href="./templates/css/components/select2/select2.min.css" type="text/css" rel="stylesheet" />
-        <link href="./templates/css/global/common.css" type="text/css" rel="stylesheet" />
-        <link href="./templates/css/layout/index.css" rel="stylesheet" /> <!-- custom CSS -->
-        <link rel="shortcut icon" href="favicon.png"/>
-        <!-- Embebed Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=ABeeZee|Josefin+Sans|Wire+One" rel="stylesheet">
-        <!-- HTML5 Shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-    </head>
-    <body>
-        <!-- HEADER SECTION START-->
-        <header class="start-page container">
-            <div class="row text-xs-center header">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 animate-in" data-anim-type="fade-in-up">
-                    <div class="header-logo text-xs-left">
-                        <a href="<?php echo(HOME); ?>">
-                            <img src="./templates/img/logo.png" class="round shadow img-fluid" alt="[Vocatio Telecom]" >
-                        </a>
-                    </div>
-                </div>                            
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 animate-in" data-anim-type="fade-in-up">
-                    <div class="header-title text-xs-center">
-                        <h3>Vocatio Telecom</h3><hr />
-                        <span>Soluções Completas em Comunicações</span>
-                    </div>
-                </div>                            
-                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 animate-in" data-anim-type="fade-in-up">
-                    <div class="header-banners">
-                        <div id="bannerSlider" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active data-link" data-link="./templates/tpl/fixo_br.tpl" data-target="page-dynamic" data-title="Ligações para Fixo Brasil">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_fixo.png" alt="Promoção Fixo Brasil">
-                                </div>
-                                <div class="carousel-item data-link" data-link="./templates/tpl/movel_tdm_br.tpl" data-target="page-dynamic" data-title="Ligações para Móvel Brasil TDM - Sem Identificação">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_tdm.png" alt="Promoção Móvel Brasil TDM">
-                                </div>
-                                <div class="carousel-item data-link" data-link="./templates/tpl/movel_cli_br.tpl" data-target="page-dynamic" data-title="Ligações para Móvel Brasil CLI - Com Identificação">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_cli.png" alt="Promoção Móvel Brasil CLI">
-                                </div>
-                                <div class="carousel-item data-link" data-link="./templates/tpl/raspbx.tpl" data-target="page-dynamic" data-title="Central IP RaspPBX - raspberry com FreePBX">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_raspPBX.png" alt="Promoção Central RaspPBX">
-                                </div>
-                                <div class="carousel-item data-link" data-link="./templates/tpl/project_ci.tpl" data-target="page-dynamic" data-title="Cidades Inteligentes - O Futuro no seu Município">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_ci.png" alt="Promoção Cidades Digitais">
-                                </div>
-                                <div class="carousel-item data-link" data-link="./templates/tpl/project_net.tpl" data-target="page-dynamic" data-title="Infraestrutura, Redes, Telefonia - Integração Total">
-                                    <img class="d-block img-fluid" src="./templates/img/banners/promo_net.png" alt="Promoção Redes Coorporativas">
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#bannerSlider" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"><i class="ion-arrow-left-b"></i></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#bannerSlider" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"><i class="ion-arrow-right-b"></i></span>
-                                <span class="sr-only">Próximo</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>                            
-            </div>
-        </header>
-        <!-- HEADER SECTION END-->
-        <!-- NavBar forms [ START ] -->
-        <ul class='vertical-tabs'>
-            <li class="vTab round-top"><a class='vTabLink' href='#formIndication'><i class="fa fa-users"></i> Indicação</a><div class="bottomTab"></div></li>
-            <li class="vTab round-top"><a class='vTabLink' href='#formLogin'><i class="fa fa-sign-in"></i> login</a><div class="bottomTab"></div></li>
-<?php
-            if (!$sess->isSTT_ERROR()):
-?>                
-            <li class="vTab round-top"><a class='vTabLink' href='#panelUserInfo'><i class="fa fa-cart-plus"></i> Carrinho</a><div class="bottomTab"></div></li>
-<?php
-            endif;
-?>                
-        </ul>
-        <div class="tabContent" id='formLogin'>
-            <header class='tabHeader'>
-                <div class="header-message pull-xs-left">
-                    <h6><b>Login</b></h6>
-                </div>
-                <div class="close-formLogin close-message pull-xs-right">
-                    <i class="fa fa-close">&nbsp;</i>
-                </div>
-                <div class="clearfix"></div>
-            </header>
-            <div class="vTabBox">
-                <form class="form-login" id="form-login" data-action="<?php echo(SEC_HOME); ?>/login.php" method="post">
-                    <input type="hidden" name="location" id="location" value="http://www.agencie.me/" />
-                    <input type="hidden" name="sessionID" id="sessionID" value="" />
-                    <div class="form-group">
-                        <div class="input-icon">
-                            <i class="fa fa-user"></i>
-                            <input class="form-control-sm" type="text" autocomplete="off" placeholder="Usuário" name="username" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-icon">
-                            <i class="fa fa-user-secret"></i>
-                            <input class="form-control-sm" type="password" autocomplete="off" placeholder="Senha" name="password" />
-                        </div>
-                    </div>
-                    <div class="form-group btn-group text-xs-center">
-                        <button type="submit" class="btn-submit btn-sm btn-success-outline">
-                            <i class="fa fa-sign-in"></i> Enviar
-                        </button>
-                        <button type="button" class="btn-Menu btn-sm btn-danger-outline dropdown-toggle round" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-retweet"></i> Esqueci<span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="" title="Esqueci Minha Senha!" alt="[Esqueci Minha Senha!]" class="link-login link-forget">Esqueceu sua Senha?</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#contact" title="Entre em contato" alt="[Entre em contato]" class="link-login link-contact">Entre em contato!</a></li>
-                        </ul>
-                    </div>
-                </form>
-                <div class="clearfix"></div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <div class="tabContent" id="formIndication">
-            <header class='tabHeader'>
-                <div class="header-message pull-xs-left">
-                    <h6><b>Indicar um Amigo</b></h6>
-                </div>
-                <div class="close-formIndication close-message pull-xs-right">
-                    <i class="fa fa-close">&nbsp;</i>
-                </div>
-                <div class="clearfix"></div>
-            </header>
-            <div class="vTabBox">
-                <form class="form-receive" id="form-receive" data-action="receive.php" method="post">
-                    <div class="form-group">
-                        <div class="input-icon">
-                            <i class="fa fa-envelope"></i>
-                            <input class="form-control-sm" type="email" autocomplete="off" placeholder="e-mail-indicador@domínio.com.br" name="email-caller" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-icon">
-                            <i class="fa fa-envelope"></i>
-                            <input class="form-control-sm" type="email" autocomplete="off" placeholder="e-mail-indicado@domínio.com.br" name="email-callee" required="required"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn-sm btn-success-outline"><i class="fa fa-sign-in"></i> Enviar</button>
-                    </div>
-                </form>
-                <div class="clearfix"></div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-<?php
-            if (!$sess->isSTT_ERROR()):
-?>                
-        <div class="tabContent" id='panelUserInfo'>
-            <header class='tabHeader'>
-                <div class="header-message pull-xs-left">
-                    <h6><b>Carrinho</b></h6>
-                </div>
-                <div class="close-formLogin close-message pull-xs-right">
-                    <i class="fa fa-close">&nbsp;</i>
-                </div>
-                <div class="clearfix"></div>
-            </header>
-            <div class="vTabBox">
-                <div class="status-page container">
-                    <div class="container-fluid row">
-                        <div class="col-md-4">
-                            <img src="./templates/img/team/2.jpg" class="circle img-fluid">
-                        </div>
-                        <div class="col-md-8 text-xs-center">
-                            <div class="user-info">
-                                Olá, Visitante.
-                            </div>
-                            <div class="ipUser">ip: 192.168.0.10</div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div><hr>
-                    <div class="container-fluid row">
-                        <div class="col-md-4">
-                            <i class="fa fa-cart-arrow-down"></i>
-                        </div>
-                        <div class="col-md-8 text-xs-center">
-                            <div class="cart-info">Minhas Compras</div>
-                            <div class="cart-value">R$ 0,00</div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div><hr>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-<?php
-            endif;
-?>                
-        <!-- NavBar forms [ END ] -->
-        <!-- DYNAMIC CONTENT SECTION START -->
-<?php
-if (($startPage) && (!$TMPL)):
-    View::Load('./templates/tpl/start.tpl');
-    View::Show();
-endif;
-?>
-        <!-- DYNAMIC CONTENT SECTION END -->
-        <!-- MAIN MENU SECTION START-->
-        <section id="page-menu"  class="<?php echo (($TMPL) ? "page" : '' ); ?> page-menu container" data-url_addr="sobre_nos">
-            <header class="page">
-                <h3>Vocatio - Menu Principal</h3>
-            </header>
-            <div class="btn-menus container-fluid">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-profile" data-url_addr="sobre_nos">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="ion-ios-home"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Sobre a Vocatio</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Clique para saber mais sobre nossa empresa. Nossa missão, histórico, o que fazemos, etc.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-ecommerce" data-url_addr="produtos_servicos">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="fa fa-cart-arrow-down"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Produtos e Serviços</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Catálogo dos nossos produtos e serviços.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-contact" data-url_addr="contatos">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="fa fa-users"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Contato</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Entre em contato com a Vocatio Telecom agora.
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-news" data-url_addr="noticias">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="fa fa-newspaper-o"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Notícias</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Principais Notícias e Lançamentos do mundo das Telecomunicações.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-method" data-url_addr="metodologia">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="fa fa-sitemap"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Metodologia</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Conheça a metodologia de trabalho da Vocatio Telecom.
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 btn-menu" data-active_data="" data-anim-type="fade-in-up" data-url_target="page-projects" data-url_addr="portifolio">
-                        <div class="btn-wrapper row">
-                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                <i class="ion-android-archive"></i>
-                            </div>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <div class="btn-title">Portfólio</div>
-                            </div>
-                            <div class="clearfix"></div>
-                            Veja os principais produtos e serviços testados e aprovados por nossos clientes.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- MAIN MENU SECTION END -->
-        <!-- PROFILE COMPANY SECTION START-->
-        <section id="page-profile" class="<?php echo ((($TMPL) && ($TMPL === 'page-profile')) ? '' : 'page' ); ?> container page-profile section-content">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-1">
-                    <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-                </div>
-                <div class="col-md-11">
-                    <h3>Sobre nossa Empresa</h3>
-                </div>
-            </div>
-            <div class="row">
-                <!--Edit Main Content Area here-->
-                <div class="col-md-9" id="divMain">
-                    <h4><strong>Telefonia Inteligente com baixo custo</strong></h4>
-                    <hr>	
-                    <p>A Vocatio Telecom utiliza tecnologias de ponta em comunicações a fim de impactar diretamente na economia a sua empresa.</p>
-                    <p>Desenvolvemos projetos para telefonia convencional, móvel, link de dados(dedicado, adsl, rádio, etc.), telefonia convergente (voz e dados usando infraestrutura da internet) e tudo mais que se relaciona a comunicação das empresas visando sempre o minimizar o impacto da integração entre a empresa, suas filiais, clientes e fornecedores.</p>
-                    <h4>Conheça a Vocatio Telecom: <small><strong>Somos uma empresa</strong></small></h4>
-                    <p>no ramo de telefonia com experiência de mais de 30 anos na área. Disponibilizamos mão de obra especializada e comprometida com nossos produtos e serviços. Nossa empresa está preparada para atender clientes de pequeno, médio e grande porte, oferecendo sempre uma solução inteligente e econômica pra quem precisa reduzir os impactos das comunicações nos custos da empresa.</p>		
-                    <h4>Parceria em busca de resultados: <small><strong>Convidamos</strong></small></h4>
-                    <p>sua empresa a conhecer nossos produtos e serviços, podendo assim, construirmos uma parceria de real eficácia aos objetivos da empresa com qualidade e retorno financeiro em cada um dos projetos desenvolvidos sob medida para cada situação da empresa.</p>
-                    <div class="partners row text-xs-center round">
-                        <span class="col-md-6"><img src="./templates/img/vivoLogo.png" /></span>
-                        <span class="col-md-6"><img src="./templates/img/digistarLogo.png" /></span>
-                        <div class="clearfix"></div>
-                    </div>
-                    <h5>Suporte: <small><strong> Buscamos estabelecer uma relação transparente </strong></small></h5>
-                    <p>com nossos clientes, oferecendo suporte através de atendimento diferenciado, com atendimento em horário comercial de segunda a sexta e emergencial, mesmo em fins de semana e feriados, através do telefone: (51) 9790-9437. </p>
-                    <h5>Produtos e Serviços: <small><strong>A Vocatio Telecom se destaca em</strong></small></h5>
-                    <ul>
-                        <li><a href="#page-price">Planos de Telefonia Voip;</a></li>
-                        <li>Link de dados dedicado ou compartilhado;</li>
-                        <li>Centrais telefônicas híbridas;</li>
-                        <li>Interconexão entre matriz e filiais;</li>
-                        <li>Projetos de Redes e Cidades Digitais;</li>
-                        <li>Redução dos Custos de Comunicações;</li>
-                        <li>Gateways GSM (gabinetes para chips de operadoras de telefonia móvel). </li>
-                    </ul>
-                </div>	                             
-                <!--/End Main Content Area here-->	                
-                <!--Edit Sidebar Content here-->
-                <div class="col-md-3">
-                    <div class="card card-info-outline">
-                        <img src="./templates/img/windmill.jpg" class="card-img round" alt="[Cidade Digital]">
-                        <div class="card-header text-xs-center">
-                            <h5 class="text-danger"><strong>Cidades Digitais</strong></h5>        
-                        </div>
-                        <div class="card-block">
-                            <p>Se o seu município pretende oferecer internet gratuita para a comunidade, entre em <a href="#page-contact">contato conosco</a> para demonstrarmos as melhores tecnologias utilizadas nesta modalidade.</p>
-                            <p>Dentre as inúmeras vantagens das <strong>Cidades Digitais</strong> podemos destacar:</p>
-                            <ul>
-                                <li>Escolas Inteligentes</li>
-                                <li>Segurança nas ruas e Patrimônio Público</li>
-                                <li>Fiscalização de Trânsito</li>
-                                <li>Sala de Monitoramento</li>
-                                <li>Integração das Secretarias e Unidades de Saúde</li>
-                                <li>Cobertura de Eventos com Ip/TV ao vivo</li>
-                                <li>Monitoramento das Conexões(Mapa de Calor e Leadings)</li>
-                                <li>Internet Gratuita para Moradores e Visitantes</li>
-                            </ul>
-                            <p>Veja mais em <a href="#page-digital-city">Cidades Digitais</a>.</p>
-                        </div>
-                    </div><br>
-                    <div class="card card-info-outline">
-                        <div class="card-header text-xs-center">
-                            <h5 class="text-danger"><strong>Economizando</strong></h5>
-                        </div>
-                        <div class="card-block">
-                            <p>Clientes que utilizam nossos <a href="#page-services">serviços</a> e <a href="#page-price">planos VoIP</a>, alcançaram economias nos custos das comunicações que chegam a 80%.</p>
-                            <p>Os processos dos clientes são levantados detalhadamente para que o projeto esteja de acordo com as normas de qualidade. Assim a execução do projeto é extremamente rápida e eficaz.</p>
-                        </div>
-                    </div>
-                </div>
-                <!--/End Sidebar Content -->        				
-            </div>
-        </div>
-    </section>
-    <!-- PROFILE COMPANY SECTION END-->
-    <!-- PRODUCTS AND SERVICES SECTION START-->
-    <section id="page-ecommerce" class="<?php echo ((($TMPL) && ($TMPL === 'page-ecommerce')) ? '' : 'page' ); ?> container page-ecommerce section-content">
-        <div class="container-fluid">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-1">
-                    <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-                </div>
-                <div class="col-md-11">
-                    <h3>Produtos e Serviços Vocatio Telecom</h3>
-                </div>
-            </div>
+        <ul class="cd-hero-slider">  <!-- autoplay -->
+            <li class="selected">
+                <div class="cd-full-width">
+                    <div class="container-fluid js-tm-page-content tm-page-1" data-page-no="1">
 
-            <!--** Aqui inserir carrousel com várias imagens que nem do Agencieme tem a lista de clientes ativos -->
-            <div class="container-fluid">
-                <h4 class="small-heading">Nossos Clientes Atuais</h4>
-                <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                    <!-- col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1 -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div id="customers-list" class="owl-carousel owl-theme">
-                            <div class="item">
-                                <img src="./templates/img/customers/uvaevinho.png" alt="Tour Uva e Vinho" class="center-block img-fluid">
-                            </div>
-                            <div class="item">
-                                <img src="./templates/img/customers/vh_turismo.png" alt="VH Turismo" class="center-block img-fluid">
-                            </div>
-                            <div class="item">
-                                <img src="./templates/img/customers/expansao.png" alt="Expansão Brasil" class="center-block img-fluid">
-                            </div>
-                            <div class="item">
-                                <img src="./templates/img/customers/andelle.png" alt="Andelle Turismo" class="center-block img-fluid">
-                            </div>
-                            <div class="item">
-                                <img src="./templates/img/customers/tissot.png" alt="Móveis Tissot" class="center-block img-fluid">
-                            </div>
-                        </div> <!--  / #sponsor-list /.owl-carousel -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="row pad-bottom animate-in" data-anim-type="fade-in-up">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
-                    <div class="row db-padding-btm db-attached">
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                            <div class="light-pricing">
-                                <div class="price">
-                                    <sup>R$</sup>0,08
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Fixo Basico</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 100,00</li>
-                                    <li><i class="fa fa-clock-o"></i>1.250 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                            <div class="light-pricing popular">
-                                <div class="price">
-                                    <sup>R$</sup>0,06
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Fixo Bronze</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 500,00</li>
-                                    <li><i class="fa fa-clock-o"></i>8.334 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                            <div class="light-pricing">
-                                <div class="price">
-                                    <sup>R$</sup>0,05
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Fixo Prata</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 1.500,00</li>
-                                    <li><i class="fa fa-clock-o"></i>30.000 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                            <div class="light-pricing">
-                                <div class="price">
-                                    <sup>R$</sup>0,04
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Fixo Ouro</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 3.000,00</li>
-                                    <li><i class="fa fa-clock-o"></i>75.000 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row animate-in" data-anim-type="fade-in-up">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
-                    <div class="row db-padding-btm db-attached">
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="light-pricing ">
-                                <div class="price">
-                                    <sup>R$</sup>0,28
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Celular CLI Brasil</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 300,00</li>
-                                    <li><i class="fa fa-clock-o"></i>1.000 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="light-pricing popular">
-                                <div class="price">
-                                    <sup>R$</sup>0,22
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Celular CLI Prata</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 5.000,00</li>
-                                    <li><i class="fa fa-clock-o"></i>22.700 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <div class="light-pricing">
-                                <div class="price">
-                                    <sup>R$</sup>0,16
-                                    <small>por minuto</small>
-                                </div>
-                                <div class="type">Celular CLI Ouro</div>
-                                <ul>
-                                    <li><i class="ion-android-done-all"></i>Ativação R$ 12.000,00</li>
-                                    <li><i class="fa fa-clock-o"></i>75.000 Minutos</li>
-                                    <li><i class="fa fa-phone"></i>Qualquer Operadora</li>
-                                    <li><i class="fa fa-globe"></i>Todo o Brasil</li>
-                                </ul>
-                                <div class="pricing-footer">
-                                    <a href="#" class="btn button-custom btn-custom-one">COMPRAR</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--PRODUCTS AND SERVICES SECTION END-->
-    <!--CONTACT SECTION START-->
-    <section id="page-contact"  class="<?php echo ((($TMPL) && ($TMPL === 'page-contact')) ? '' : 'page' ); ?> container page-contact section-content">
-        <div class="row page-header animate-in" data-anim-type="fade-in-left">
-            <div class="col-md-1">
-                <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-            </div>
-            <div class="col-md-11">
-                <h3>Entre em Contato</h3>
-            </div>
-        </div>
-        <div class="row animate-in" data-anim-type="fade-in-up">
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                <div class="contact-wrapper">
-                    <h4>Nossas Redes Sociais</h4>
-                    <p>
-                        Estamos presentes nas principais mídias sociais.
-                        Clique no site de sua escolha para entrar em contato conosco.
-                    </p>
-                    <div class="round-bottom">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Redes Sociais">
-                            <a href="#"><i class="btn btn-warning-outline fa fa-facebook"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-twitter"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-pinterest"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-google-plus" ></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-rss"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                <div class="contact-wrapper">
-                    <h4>Contato rápido</h4>
-                    <h5><strong>Email : </strong> comercial@vocatiotelecom.com.br </h5>
-                    <h5><strong>Fone : </strong> +55 51 9 9790-9437 </h5>
-                    <h5><strong>Skype : </strong> vocatiotelecom </h5>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                <div class="contact-wrapper">
-                    <h4>Endereço : </h4>
-                    <h5>Rua Dale Coutinho, 25</h5>
-                    <h5>Sapiranga - RS</h5>
-                    <div class="row footer-div" >
-                        <div class="col-md-6">&copy; 2017 comercial@vocatiotelecom.com.br</div>
-                        <div class="col-md-6"><a href="http://www.vocatiotelecom.com,br/" target="_blank" >by Vocatio Telecom</a></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row animate-in" data-anim-type="fade-in-up">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-12 text-xs-center">
-                    <h4 class="block-title">Formulário de Contato</h4>
-                    <p>
-                        Preencha o formulário com seus dados e informe o resumo das informações que necessita para 
-                        direcionarmos um especialista que tratará do seu caso o mais breve possível.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="row dv-form-contact animate-in" data-anim-type="fade-in-up">
-            <!--Start Contact form -->
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 container-fluid bg-trasp-blue">
-                <form class="form-contact" name="contact-form" method="post" role="form" data-action="https://www.agencie.me/save-contact">
-                    <input type="hidden" class="ignore-fields" id="op" name="op" value="opInsert" />
-                    <input type="hidden" class="ignore-fields" id="pk_web_messages" name="pk_web_messages" value="0" />
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="name_user">Nome: <span class="required">*</span></label>
-                                <div class="input-icon">
-                                    <i class="fa fa-user"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Nome" name="name_user" id="name_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="email_user">e-mail: <span class="required">*</span></label>
-                                <div class="input-icon">
-                                    <i class="fa fa-envelope"></i>
-                                    <input type="email" class="form-control-sm" placeholder="email@dominio.com" name="email_user" id="email_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">
-                            <div class="form-group">
-                                <label class="control-label" for="phone_user">Telefone: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-phone-square"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Telefone" name="phone_user" id="phone_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">
-                            <div class="form-group">
-                                <label class="control-label" for="cel_user">Celular: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-phone"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Celular" name="cel_user" id="cel_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="end_user">Endereço: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-home"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Endereço" name="end_user" id="end_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="compl_user">Complemento: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-ellipsis-h"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Complemento do Endereço" name="compl_user" id="compl_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="city_user">Município: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-map-marker"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Município" name="city_user" id="city_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-8 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="state_user">Estado: </label>
-                                <select class="form-control selectpicker" placeholder="Estado" name="state_user" id="state_user">
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ac.png'></img>  Acre</span>" value="AC">Acre</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/al.png'></img>  Alagoas</span>" value="AL">Alagoas</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ap.png'></img>  Amapá</span>" value="AP">Amapá</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/am.png'></img>  Amazonas</span>" value="AM">Amazonas</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ba.png'></img>  Bahia</span>" value="BA">Bahia</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ce.png'></img>  Ceará</span>" value="CE">Ceará</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/df.png'></img>  Distrito Federal</span>" value="DF">Distrito Federal</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/go.png'></img>  Goiás</span>" value="GO">Goiás</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/es.png'></img>  Espírito Santo</span>" value="ES">Espírito Santo</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ma.png'></img>  Maranhão</span>" value="MA">Maranhão</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/mt.png'></img>  Mato Grosso</span>" value="MT">Mato Grosso</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ms.png'></img>  Mato Grosso do Sul</span>" value="MS">Mato Grosso do Sul</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/mg.png'></img>  Minas Gerais</span>" value="MG">Minas Gerais</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pa.png'></img>  Pará</span>" value="PA">Pará</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pb.png'></img>  Paríba</span>" value="PB">Paraiba</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pr.png'></img>  Paraná</span>" value="PR">Paraná</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pe.png'></img>  Pernambuco</span>" value="PE">Pernambuco</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/pi.png'></img>  Piauí</span>" value="PI">Piauí­</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rj.png'></img>  Rio de Janeiro</span>" value="RJ">Rio de Janeiro</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rn.png'></img>  Rio Grande do Norte</span>" value="RN">Rio Grande do Norte</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rs.png'></img>  Rio Grande so Sul</span>" value="RS" selected>Rio Grande do Sul</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/ro.png'></img>  Rondônia</span>" value="RO">Rondônia</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/rr.png'></img>  Roraima</span>" value="RR">Roraima</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/sp.png'></img>  São Paulo</span>" value="SP">São Paulo</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/sc.png'></img>  Santa Catarina</span>" value="SC">Santa Catarina</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/se.png'></img>  Sergipe</span>" value="SE">Sergipe</option>
-                                    <option data-content="<img src='<?php echo(IMAGE_PATH); ?>/flags_states_br/to.png'></img>  Tocantins</span>" value="TO">Tocantins</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                            <div class="form-group">
-                                <label class="control-label" for="cep_user">Cep: </label>
-                                <div class="input-icon">
-                                    <i class="fa fa-map-marker"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Cep" name="cep_user" id="cep_user" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-2">
-                            <div class="form-group">
-                                <label class="control-label" for="fk_type_messages">Tipo: <span class="required">*</span></label>
-                                <select class="form-control" name="fk_type_messages" id="fk_type_messages">
-                                    <option value="1" selected>Telefonia VoIP</option>
-                                    <option value="2">Projetos de Redes</option>
-                                    <option value="3">Cidades Digitais</option>
-                                    <option value="4">Equipamentos de Telefonia</option>
-                                    <option value="5">Desenvolvimento Web</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                            <div class="form-group">
-                                <label class="control-label" for="title_msg">Título: <span class="required">*</span></label>
-                                <div class="input-icon">
-                                    <i class="fa fa-modal-window"></i>
-                                    <input type="text" class="form-control-sm" placeholder="Título da Mensagem" name="title_msg" id="title_msg" />
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
-                                <div class="form-group">
-                                    <label class="control-label" for="msg_user">Mensagem: <span class="required">*</span></label>
-                                    <div class="input-icon">
-                                        <i class="fa fa-send-o"></i>
-                                        <textarea class="form-control" rows="3" placeholder="Digite a Mensagem" name="msg_user" id="msg_user"></textarea>
+
+                            <div class="col-xs-12">
+                                <i class="fa fa-4x fa-camera tm-icon"></i>
+                                <h2 class="tm-site-name">FLAT design</h2>
+                                <div class="tm-bg-white-translucent text-xs-left tm-textbox tm-textbox-1-col">
+                                    <p class="tm-text">Flat design used <a rel="nofollow" href="https://codyhouse.co/gem/hero-slider/" target="_blank">Hero Slider</a> for left and right page transitions. Responsiveness is based on <a rel="nofollow" href="http://getbootstrap.com/" target="_blank">Bootstrap</a> 4 alpha 2. Images are taken from <a rel="nofollow" href="https://unsplash.com/" target="_blank">Unsplash</a>. This web template is provided by <a href="https://plus.google.com/+templatemo" target="_blank">templatemo</a> for free of charge.</p>
+                                    <p class="tm-text">Mauris eros lacus, sollicitudin sit amet lacinia et, vehicula bibendum felis. Pellentesque in quam iaculis erat iaculis lacinia. Donec sagittis sapien odio, a sodales velit elementum nec.</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div> <!-- .cd-full-width -->
+            </li>
+
+            <li>
+                <div class="cd-full-width">
+
+                    <div class="container-fluid js-tm-page-content" data-page-no="2">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="tm-2-col-container">
+
+                                    <div class="tm-bg-white-translucent text-xs-left tm-textbox tm-2-col-textbox">
+                                        <h2 class="tm-text-title">Lorem ipsum dolor</h2>
+                                        <p class="tm-text">Quisque sagittis quam tortor, sit amet posuere justo tempor non. Cras tempus, eros vel ultrices aliquam, velit tortor sodales risus, ac facilisis lectus tortor eget neque.</p>
+                                        <p class="tm-text">Nam auctor dui ante. Curabitur tristique nec ligula ac semper. Nunc eu leo sit amet elit condimentum consectetur.</p>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="cntAuth">Autenticação: <span class="required">*</span></label>
-                                    <div class="input-icon">
-                                        <?php
-                                        $captchaId = '';
-                                        echo(Captcha::CreateCaptcha($captchaId, 'cntAuth', 'cntImg', 'form_contact', 0));
-                                        ?>
-                                        <input type="text" class="form-control-sm" autocomplete="off" placeholder="Digite os caracteres acima" name="cntAuth" id="cntAuth" />
-                                        <input id="id" type="hidden" name="id" value="<?php echo $captchaId ?>" />
+
+                                    <div class="tm-bg-white-translucent text-xs-left tm-textbox tm-2-col-textbox">
+                                        <h2 class="tm-text-title">Phasellus rutrum sapien</h2>
+                                        <p class="tm-text">
+                                        Donec sagittis sapien odio, a sodales velit elementum nec. Donec feugiat purus a bibendum hendrerit.</p>
+                                        <p class="tm-text">Fusce ut elit interdum sem consectetur maximus. Mauris eros lacus, sollicitudin sit amet lacinia et, vehicula bibendum felis. Pellentesque in quam iaculis erat iaculis lacinia.</p>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-xs-center">
-                            <div class="form-actions">
-                                <button type="submit" class="contact-submit-btn btn btn-success">
-                                    <i class="fa fa-send-o"></i> Enviar
-                                </button>
+                    </div>
+
+                </div> <!-- .cd-full-width -->
+
+            </li>
+
+            <!-- Page 3 -->
+            <li>
+
+                <div class="cd-full-width">
+
+                    <div class="container-fluid js-tm-page-content" data-page-no="3">
+
+                        <div class="row tm-img-gallery">
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-01.jpg' %}">
+                                    <img src="{% static 'img/tm-img-01-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-02.jpg' %}">
+                                    <img src="{% static 'img/tm-img-02-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-03.jpg' %}">
+                                    <img src="{% static 'img/tm-img-03-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-04.jpg' %}">
+                                    <img src="{% static 'img/tm-img-04-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-05.jpg' %}">
+                                    <img src="{% static 'img/tm-img-05-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                <a href="{% static 'img/tm-img-06.jpg' %}">
+                                    <img src="{% static 'img/tm-img-06-tn.jpg' %}" alt="Image" class="img-fluid tm-img">
+                                </a>
                             </div>
                         </div>
+
                     </div>
-                </form>
-            </div>
-        </div>
-        <!--End Contact form -->
-        <div class="row animate-in" data-anim-type="fade-in-up">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-12 text-xs-center">
-                    <h4 class="block-title">Nossa Localização</h4>
+
                 </div>
-            </div>
-        </div>
-        <div class="row animate-in" data-anim-type="fade-in-up">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-12">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1213.37580639211!2d-51.18494622183748!3d-30.023646639645506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x951979d47d8b86d9%3A0x64e4ded8d8b5f3e6!2sRua+Guararapes%2C+153+-+Ouro+Branco%2C+Novo+Hamburgo+-+RS%2C+90550-110!5e0!3m2!1spt-BR!2sbr!4v1462890881461" width="100%" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
+
+            </li>
+
+            <li>  <!-- class="cd-bg-video" -->
+                <div class="js-tm-page-content" data-page-no="4">
+
+                    <div class="cd-bg-video-wrapper" data-video="video/sunset-loop">
+                        <!-- video element will be loaded using jQuery -->
+                    </div> <!-- .cd-bg-video-wrapper -->
+
                 </div>
-            </div>
-        </div>
-    </section>
-    <!--CONTACT SECTION END-->
-    <!-- NEWS SECTION START-->
-    <section id="page-news" class="<?php echo ((($TMPL) && ($TMPL === 'page-news')) ? '' : 'page' ); ?> container page-news section-content">
-        <div class="row page-header animate-in" data-anim-type="fade-in-left">
-            <div class="col-md-1">
-                <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-            </div>
-            <div class="col-md-11">
-                <h3>Notícias Vocatio Telecom</h3>
-            </div>
-        </div>
-        <div class="container-fluid row">
-            <aside class="col-xs-12 col-sm-12 col-md-3 col-lg-3 bg-news posts-highlights round">
-                <header class="text-xs-center bg-warning round-top">
-                    <h4>Destaques</h4>
-                </header>
-                <div class="card card-danger-outline">
-                    <div class="card-header text-xs-center">
-                        <a href="#"><img src="templates/img/logo.jpg" class="card-img img-fluid"></a>
-                    </div>
-                    <div class="card-block text-uppercase">
-                        <a href="#">título da chamada da notícia</a>
-                    </div>
-                </div>
-            </aside>
-            <div class="col-xs-12 col-sm-12 col-md-offset-1 col-md-8 col-lg-offset-1 col-lg-8 bg-news round">
-                <article class="posts">
-                    <header class="text-xs-center round-top">
-                        <h4>Título da Notícia</h4>
-                    </header>
-                    <div class="post-body">
-                        <img src="templates/img/query.jpg" class="pull-xs-left">
-                        <div class="post-resume">
-                            Resumo da notícia. Aqui vai a notícia lida no banco de dados para cada notícia tem que haver um 
-                            article para mostrar que este post é um campo em que deve ter todos estes campos para poder permanecer na página.
-                            E ela é dinâmica com scroll do tipo facebook, quanto mais rola pra baixo mais notícias sai.
-                            Dessa forma não é necessário utilizar paginators
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <footer class="round-bottom">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Redes Sociais">
-                            <a href="#"><i class="btn btn-warning-outline fa fa-facebook"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-twitter"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-pinterest"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-rss"></i></a>
-                        </div>
-                    </footer>
-                </article>
-                <article class="posts">
-                    <header class="text-xs-center round-top">
-                        <h4>Título da Notícia</h4>
-                    </header>
-                    <div class="post-body">
-                        <img src="templates/img/query.jpg" class="pull-xs-left">
-                        <div class="post-resume">
-                            Resumo da notícia. Aqui vai a notícia lida no banco de dados para cada notícia tem que haver um 
-                            article para mostrar que este post é um campo em que deve ter todos estes campos para poder permanecer na página.
-                            E ela é dinâmica com scroll do tipo facebook, quanto mais rola pra baixo mais notícias sai.
-                            Dessa forma não é necessário utilizar paginators
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <footer class="round-bottom">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Redes Sociais">
-                            <a href="#"><i class="btn btn-warning-outline fa fa-facebook"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-twitter"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-pinterest"></i></a>
-                            <a href="#"><i class="btn btn-warning-outline fa fa-rss"></i></a>
-                        </div>
-                    </footer>
-                </article>
-                <footer class="text-xs-center" aria-label="Vocatio News">
-                    <ul class="pagination pagination-sm pagination-circle">
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Anterior">
-                                <i class="ion-arrow-left-b" aria-hidden="true"></i>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Próximo">
-                                <i class="ion-arrow-right-b" aria-hidden="true"></i>
-                                <span class="sr-only">Próximo</span>
-                            </a>
-                        </li>
-                    </ul>
-                </footer>
-            </div>
-        </div>
-    </section>
-    <!-- NEWS SECTION END-->
-    <!-- MOTHODOLOGY SECTION START-->
-    <section id="page-method"  class="<?php echo ((($TMPL) && ($TMPL === 'page-method')) ? '' : 'page' ); ?> container page-method section-content">
-        <div class="row page-header animate-in" data-anim-type="fade-in-left">
-            <div class="col-md-1">
-                <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-            </div>
-            <div class="col-md-11">
-                <h3>Nossa Metodologia de Trabalho</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <!--Edit Main Content Area here-->
-                <h4><strong>O que a Vocatio Telecom pode fazer pela sua Empresa?</strong></h4>
-                <ul>
-                    <li>
-                        <strong class="text-danger">Telefonia Voip:</strong> Possuímos servidores que atendem nossos clientes no intuito de reduzir os custos de telefonia, sendo que, em alguns casos, a Telefonia é responsável pelo segundo maior custo da empresa, quando não o primeiro. Percebendo esta demanda a Vocatio Telecom criou sua própria palaforma desenvolvida e mantida por seus técnicos.
-                        <p>A Plataforma tem entre outros recursos a bilhetagem on-line, ou seja, ao finalizar a ligação o cliente já pode consultar imediatamente quanto foi o custo desta. Destacamos também a possibilidade do cliente gerenciar várias contas voip dentro da sua empresa, podendo criar centros de custos separados para cada departamento.</p>
-                    </li>
-                    <li>
-                        <strong class="text-danger">Assessoria, Venda e Manutenção de Centrais telefônicas:</strong><span> Por estarmos muito próximos a fábrica da <a target="_blank" href="http://www.digistar.com.br">Digistar</a> a Vocatio Telecom contruiu ao longo dos anos um estreito relacionamento comercial com o fabricate, além de que sempre podemos contar com a equipe técnica da fábrica para criar as melhores soluções visando o custo/benefício dos nossos clientes.</span>
-                    </li>
-                    <li>
-                        <strong class="text-danger">Assessoria e Manutenção de Redes de Computadores:</strong><span> Com profundo conhecimento das redes de computadores, nossa empresa projeta, assessora à aquisição e mantém os equipamentos e servidores de nossos clientes.</span><br />
-                        <span>Ao desenvolver <strong class="text-info">projetos de redes</strong> nossos técnicos verificam cada caso de utilização dos usuários e a melhor forma de monitorá-los.</span><br />
-                        <span>A <strong class="text-info">assesssoria</strong> é realizada de forma a indicar ao cliente o(s) melhor(es) equipamento(s) para que a empresa tenha uma performance adequada levando em conta os custos, a utilização, a confiança e respostas rápidas.</span>
-                        <p>Na <strong class="text-info">manutenção</strong>, o cliente ao contatar o técnico, este imediatamente toma as providências necessárias para o pronto restabelecimento do problema, pois, na medida do possível, atendemos as demandas por meio de acesso remoto em nossos celulares, tablets e computadores, eliminado mais de 90% dos problemas utilizando esta tecnologia.</p>
-                    </li>
-                    <li>
-                        <strong class="text-danger">Assessoria e Controle da Telefonia Fixa e Móvel:</strong>
-                        <span>A Vocatio Telecom também conta com parceiros da <a target="_blank" href="http://www.vivo.com.br/portalweb/appmanager/env/web?_nfpb=true&_nfls=false&_pageLabel=empPrincipalBook#">Operadora Vivo</a>.</span>
-                        <p>Sendo a operadora mais utilizadas no país, é indicadas para utilização de links de dados, telefonia fixa e telefonia móvel.</p>
-                        <div class="container-fluid alert alert-info">
-                            <div class="row text-xs-center">
-                                <div class="col-md-6 pull-left">
-                                    <a target="_blank" href="http://www.vivo.com.br/portalweb/appmanager/env/web?_nfpb=true&_nfls=false&_pageLabel=empPrincipalBook#"><img src="./templates/img/vivoLogo.png" title= "Vivo" /></a>
+
+            </li>
+
+            <li>
+                <div class="cd-full-width">
+
+                    <div class="container-fluid js-tm-page-content" data-page-no="5">
+
+                        <div class="tm-contact-page">
+
+                            <div class="row">
+
+                                <div class="col-xs-12">
+
+                                    <h2 class="tm-section-title">Contact Us</h2>
+                                    <p class="tm-text tm-font-w-400 m-b-3">Pellentesque in quam iaculis erat iaculis lacinia. Donec sagittis sapien odio, a sodales velit elementum nec. Donec feugiat purus a bibendum hendreit.</p>
+
                                 </div>
-                                <div class="col-md-6 center-block">
-                                    <a target="_blank" href="http://www.digistar.com.br"><img src="./templates/img/digistarLogo.png" title= "Digistar" /></a>
-                                </div>
+
                             </div>
+
+                            <!-- contact form -->
+                            <div class="row">
+                                <form action="index.html" method="post" class="tm-contact-form">
+
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                        <div class="form-group">
+                                            <input type="text" id="contact_name" name="contact_name" class="form-control" placeholder="Your Name"  required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" id="contact_email" name="contact_email" class="form-control" placeholder="Your Email"  required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="contact_subject" name="contact_subject" class="form-control" placeholder="Subject"  required/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                        <div class="form-group">
+                                            <textarea id="contact_message" name="contact_message" class="form-control" rows="5" placeholder="Your message" required></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <button type="submit" class="pull-xs-right tm-submit-btn">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h5><strong class="text-danger">Redes Inteligentes</strong></h5>
+
                     </div>
-                    <div class="card-block">
-                        <span style="font-size:32px" class="ion-ios-briefcase"></span>
-                        <span>A experiência acumulada ao longo dos anos, trabalhando sempre para levar qualidade e facilidade aos nossos clientes, percebemos a carência do mercado em soluções para eliminar os problemas de redes e, de quebra, baixar os custos das comunicações que tanto pesa no orçamento das empresas. Para Tanto fora preciso formar parcerias na área de telefonia e redes com empresas que apresentassem tecnologia de ponta e permitir soluções personalizadas, quando necessário.</span>
-                        <p><a class="btn btn-info" style="margin:5px 0px 15px;" href="#">Saiba mais</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h5><strong class="text-danger">Telefonia Voip</strong></h5>
-                    </div>
-                    <div class="card-block">
-                        <span style="font-size:32px" class="ion-android-phone-landscape"></span>
-                        <span>As centrais telefônicas da Vocatio Telecom que se comutam através da rede IP <em>(Internet Protocol)</em>. Isto faz a convergência os dois mundos da telefonia. De um lado a rede pública de telefonia <em>(PSTN)</em> e de outro as redes de voz sobre a internet. Em cima deste cenário Vocatio Telecom a mais de 10 anos já vinha construindo redes de computadores para comunicação remota e culminou quando decidimos desenvolvermos sistemas de comunicação específicos para telefonia.</span>
-                        <p><a class="btn btn-info" style="margin:5px 0px 15px;" href="#">Saiba mais</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h5><strong class="text-danger">Web Design</strong></h5>
-                    </div>
-                    <div class="card-block">
-                        <span style="font-size:32px" class="ion-ios-cloud"></span>
-                        <span>O crescimento das tecnologias disponíveis para desenvolvimento de sites, permitiu nosso corpo técnico iniciar novos projetos de Sistemas para Comunicações. Aliado a profissionais da área de Web Design, conseguimos trazer o mundo de cloud services para nosso portifólio de serviços, atendendo clientes que necessitam de sistemas específicos em qualquer tipo de acesso, seja por celular, tablets ou desktops, tudo responsivo e com altíssima performance.</span>
-                        <p><a class="btn btn-info" style="margin:5px 0px 15px;" href="#">Saiba mais</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h5><strong class="text-danger">Cidades Digitais</strong></h5>
-                    </div>
-                    <div class="card-block">
-                        <span style="font-size:32px" class="fa-digg"></span>
-                        <span>A popularização da internet no mundo, a globalização, aprendizado descentralizado, monitoramento e segurança, integração do poder público e internet gratuita para visitantes e moradores, são características que envolvem uma <strong>Cidade Digital</strong>. A Nossa empresa percebendo este nicho de mercado especializou-se em criar metodologias e projetos avançados para atender a necessidade de cada município e suas características.</span>
-                        <p><a class="btn btn-info" style="margin:5px 0px 15px;" href="#">Saiba mais</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12" >                   
-                <!--Edit Tabs here-->
-                <h4><div class="bg-warning text-xs-center text-box round">Metodologia de Execução dos Projetos</div></h4>
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#query" data-toggle="tab">
-                            <h5><i class="fa fa-edit"></i>Pesquisa</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#project" data-toggle="tab">
-                            <h5><i class="fa fa-briefcase"></i>Projeto</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#press" data-toggle="tab">
-                            <h5><i class="fa fa-film"></i>Apresenta&ccedil;&atilde;o</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#actions" data-toggle="tab">
-                            <h5><i class="fa fa-users"></i>Execu&ccedil;&atilde;o</h5>
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="query" role="tabpanel">
-                        <img src="./templates/img/query.jpg" class="pull-left img-thumbnail" alt=""/>
-                        <p>A pesquisa é uma das fases mais importantes do projeto, pois é a base de todo processo de averiguação das necessidades do cliente, onde definimos os equipamentos a serem utilizados, identificação dos tipos de comunicação de melhor resposta no custo/benefício <em>(internet, telefonia fixa, telefonia móvel, voip)</em>, Serviços que serão aplicados <em>(desenvolvimento, configuração de centrais telefônicas, configuração de servidores, infra estrutura de redes, etc.)</em> e por último o levantamento dos custos atuais da empresa a fim de projetar o percentual de economia, os benefícios das melhorias propostas e o tempo de retorno do investimento.</p>
-                    </div>
-                    <div class="tab-pane fade" id="project" role="tabpanel">
-                        <img src="./templates/img/project.jpg" class="pull-left img-thumbnail" alt=""/>
-                        <p>Após o levantamento dos dados nosso técnico passa para fase de projeto. É neste ponto que criamos e definimos toda a aplicação dos equipamentos, softwares, serviços a serem contratados e o custo de cada possibilidade desenvolvida.</p>
-                        <p>Nossa equipe detalha cada processo minunciosamente, assim conseguimos calcular os custos do projeto para que nossos clientes não tenham surpresas no decorrer da execução do projeto.</p>
-                    </div>
-                    <div class="tab-pane fade" id="press" role="tabpanel">
-                        <img src="./templates/img/presentation.png" class="pull-left img-thumbnail" alt=""/>
-                        <p>Na apresentação o detalhamento vai para as mãos de todos os envolvidos, onde serão discutidos e, se for o caso, alterados conforme o concenso da reunião.</p>
-                        <p>Nesta fase também apresentam-se os custos e os contratos a serem assinados pelas partes envolvidas.</p>
-                    </div>
-                    <div class="tab-pane fade" id="actions" role="tabpanel">
-                        <img src="./templates/img/work.png" class="pull-left img-thumbnail" alt=""/>
-                        <p>A execução do projeto nossa equipe técnica auxilia na compra dos equipamentos e no preparo do ambiente de trabalho onde será realizada a instalação dos mesmos. Em alguns casos o trabalho inicia-se após a entrega dos serviços de terceiros ou entrega dos equipamentos.</p>
-                        <p>Cada fase do projeto apresentado segue rigorosamente os prazos acordados na apresentação do mesmo, e somente serão finalizados após a aprovação do cliente por meio de check list entregue na apresentação do projeto.</p>
-                    </div>
-                </div>
-            </div>
+
+                </div> <!-- .cd-full-width -->
+            </li>
+        </ul> <!-- .cd-hero-slider -->
+
+        <!-- Preloader, https://ihatetomatoes.net/create-custom-preloading-screen/ -->
+        <div id="loader-wrapper">
+
+            <div id="loader"></div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+
         </div>
-        <!--End Tabs here-->
-    </section>
-    <!-- METHODOLOGY SECTION END-->
-    <!-- PROJECTS SECTION START-->
-    <section id="page-projects"  class="<?php echo ((($TMPL) && ($TMPL === 'page-projects')) ? '' : 'page' ); ?> container page-projects section-content">
-        <div class="container-fluid">
-            <div class="row page-header animate-in" data-anim-type="fade-in-left">
-                <div class="col-md-1">
-                    <div class="close-btn"><i class="ion-ios-close-outline"></i></div>
-                </div>
-                <div class="col-md-11">
-                    <h3>Nossos Projetos</h3>
-                </div>
-            </div>
-            <div class="row text-xs-center animate-in" data-anim-type="fade-in-up" >
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pad-bottom">
-                    <div class="caegories">
-                        <a href="#" data-filter="*" class="active btn btn-custom btn-custom-two btn-sm">Todos</a>
-                        <a href="#" data-filter=".html" class="btn btn-custom btn-custom-two btn-sm">VoIP</a>
-                        <a href="#" data-filter=".css" class="btn btn-custom btn-custom-two btn-sm">Redes</a>
-                        <a href="#" data-filter=".code" class="btn btn-custom btn-custom-two btn-sm" >Cidades Digitais</a>
-                        <a href="#" data-filter=".script" class="btn btn-custom btn-custom-two btn-sm" >Desenvolvimento Web</a>
-                    </div>
-                </div>
-            </div>
-            <div class="row text-xs-center animate-in" data-anim-type="fade-in-up" id="work-div">
 
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 html">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/1.jpg">
-
-                            <img src="./templates/img/portfolio/1.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Centrais Telefônicas</h4>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 html css">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/2.jpg">
-
-                            <img src="./templates/img/portfolio/2.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Rede Interna</h4>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 code script">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/3.jpg">
-
-                            <img src="./templates/img/portfolio/3.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Cidades Digitais</h4>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 html script">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/4.jpg">
-
-                            <img src="./templates/img/portfolio/4.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Desenvolvimento Web Responsivo</h4>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 html code">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/5.jpg">
-
-                            <img src="./templates/img/portfolio/5.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Desenvolvimento Desktop</h4>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 script">
-                    <div class="work-wrapper">
-
-                        <a class="fancybox-media" title="Image Title Goes Here" href="./templates/img/portfolio/6.jpg">
-
-                            <img src="./templates/img/portfolio/6.jpg" class="img-responsive img-rounded" alt="" />
-                        </a>
-
-                        <h4>Desenvolvimento Apps Móvel</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--PROJECTS SECTION END-->
-    <div class="scroll-top-wrapper">
-        <span class="scroll-top-inner">
-            <i class="fa fa-2x fa-arrow-circle-up"></i>
-        </span>
-    </div>
-    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME -->
-    <script src="./templates/js/plugins/jquery/jquery-2.1.3.min.js"></script> <!-- jQuery -->
-    <script src="./templates/js/plugins/bootstrap/bootstrap-4.0.0.min.js"></script> <!-- bootstrap -->
-    <script src="./templates/js/plugins/bootstrap/tether.min.js"></script> <!-- bootstrap -->
-    <script src="./templates/js/components/bootstrap-verticaltabs/bootstrap.verticaltabs.js" type="text/javascript"></script>
-    <script src="./templates/js/components/bootstrap-messagebox/bootstrap.messagebox.js" type="text/javascript"></script>
-    <script src="./templates/js/components/bootstrap-selectpicker/js/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="./templates/js/components/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-    <script src="./templates/js/components/jquery-mask/js/jquery.mask.min.js" type="text/javascript"></script>
-    <script src="./templates/js/components/jquery-easing/jquery.easing.min.js" type="text/javascript"></script>
-    <script src="./templates/js/components/owl-corousel/owl.carousel.min.js" type="text/javascript"></script>
-    <script src="./templates/js/components/jquery-popup/jquery.popup.min.js" type="text/javascript"></script>
-    <!-- Filtro das imagnes do portifólio
-    <script src="./templates/js/components/jquery-mixitup/jquery.mixitup.min.js" type="text/javascript"></script>
-    -->
-    <script src="./templates/js/components/select2/select2.full.min.js" type="text/javascript"></script>
-    <!-- EASING SCROLL SCRIPTS PLUGIN -->
-    <script src="assets/js/vegas/jquery.vegas.min.js"></script>
-    <!-- FANCYBOX PLUGIN -->
-    <script src="assets/js/source/jquery.fancybox.js"></script>
-    <!-- ISOTOPE SCRIPTS -->
-    <script src="assets/js/jquery.isotope.js"></script>
-    <!-- VIEWPORT ANIMATION SCRIPTS   -->
-    <script src="assets/js/appear.min.js"></script>
-    <script src="assets/js/animations.min.js"></script>
-    <!-- CUSTOM SCRIPTS -->
-    <script src="./templates/js/global/constants.js" type="text/javascript"></script>
-    <script src="./templates/js/global/common.js" type="text/javascript"></script>
-    <script src="./templates/js/indexForms.js" type="text/javascript"></script>
-    <script src="./templates/js/index.js" type="text/javascript"></script>
-</body>
-
-</html>
+    {% endblock %}

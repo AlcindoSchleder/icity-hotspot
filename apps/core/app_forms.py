@@ -22,11 +22,12 @@ class UserLoginForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'type_login')
+        fields = ('username', 'password')
+        # fields = ('username', 'password', 'type_login')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control line-input', 'placeholder': 'Nome de usuário'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control line-input', 'placeholder': 'Senha'}),
-            'type_login': forms.CharField(widget=forms.RadioSelect(choices=SOCIAL_LOGINS_APPS))
+            # 'type_login': forms.CharField(widget=forms.RadioSelect(choices=SOCIAL_LOGINS_APPS))
         }
         labels = {
             'username': _(u'person'),

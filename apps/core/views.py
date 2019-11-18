@@ -1,10 +1,37 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render
-from django.views.generic import View, TemplateView, FormView, ListView, DeleteView
-from .app_forms import UserLoginForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, get_user_model
+from django.views.generic import View, FormView
+from django.db.models.query_utils import Q
+from django.core.mail import send_mail
+from django.urls import reverse_lazy
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template import loader
+
+from hotspot.settings import DEFAULT_FROM_EMAIL
+
+from .app_forms import (
+    UserLoginForm, UserRegistrationForm, SetPasswordForm, PasswordResetForm
+)
+
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+
+
+from .views_mixim import SuperUserRequiredMixin
 
 # Create your views here.
+
+
+class MainPageView(View):
+    template_name = 'index.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 
 class UserFormView(View):
@@ -15,7 +42,7 @@ class UserFormView(View):
         form = self.form_class(None)
 
         if request.user.is_authenticated:
-            return redirect('base:index')
+            return redirect('core:index')
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
@@ -28,7 +55,7 @@ class UserFormView(View):
                 if not request.POST.get('remember_me', None):
                     request.session.set_expiry(0)
                 login(request, user)
-                return redirect('base:index')
+                return redirect('core:index')
 
         return render(request, self.template_name, {'form': form})
 
@@ -42,11 +69,11 @@ class UserRegistrationFormView(SuperUserRequiredMixin, SuccessMessageMixin, Form
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, username=cleaned_data['username'])
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = self.form_class(None)
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -60,16 +87,16 @@ class UserRegistrationFormView(SuperUserRequiredMixin, SuccessMessageMixin, Form
                 form.add_error('password', 'Senhas diferentes.')
                 return self.form_invalid(form)
 
-            return redirect("login:usuariosview")
+            # return redirect("login:usuariosview")
 
         return render(request, self.template_name, {'form': form})
 
 
 class UserLogoutView(View):
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect("login:loginview")
+        return redirect("core:index")
 
 
 class ForgotPasswordView(FormView):
@@ -146,7 +173,9 @@ class PasswordResetConfirmView(FormView):
 
         if uidb64 is None or token is None:
             form.add_error(
-                field=None, error=u"O link usado para a troca de senha não é válido ou expirou, por favor tente enviar novamente.")
+                field=None,
+                error=u"O link usado para a troca de senha não é válido ou expirou, por favor tente enviar novamente."
+            )
             return self.form_invalid(form)
 
         try:
@@ -174,5 +203,7 @@ class PasswordResetConfirmView(FormView):
                 return self.form_invalid(form)
         else:
             form.add_error(
-                field=None, error=u"O link usado para a troca de senha não é válido ou expirou, por favor tente enviar novamente.")
+                field=None,
+                error=u"O link usado para a troca de senha não é válido ou expirou, por favor tente enviar novamente."
+            )
             return self.form_invalid(form)

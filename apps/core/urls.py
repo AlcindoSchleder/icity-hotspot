@@ -1,30 +1,33 @@
 # -*- coding: utf-8 -*-
 
 from django.urls import path
+from .views import (
+    MainPageView,
+    UserFormView,
+    UserRegistrationFormView,
+    ForgotPasswordView,
+    PasswordResetConfirmView,
+    UserLogoutView,
+)
 
 app_name = 'login'
 urlpatterns = [
-    # login/
-    path('', views.UserFormView.as_view(), name='loginview'),
-
+    path('', MainPageView.as_view(), name='index'),
+    path('login/', UserFormView.as_view(), name='loginview'),
     # login/registrar/
     path(
         'registrar/',
-        views.UserRegistrationFormView.as_view(),
+        UserRegistrationFormView.as_view(),
         name='registrarview'
     ),
-
     # login/esqueceu/:
-    path('esqueceu/', views.ForgotPasswordView.as_view(), name='esqueceuview'),
-
+    path('esqueceu/', ForgotPasswordView.as_view(), name='esqueceuview'),
     # login/trocarsenha/:
     path(
         'trocarsenha/<str:idb64>-<str:token>/',
-        views.PasswordResetConfirmView.as_view(),
+        PasswordResetConfirmView.as_view(),
         name='trocarsenhaview'
     ),
-
     # logout
-    path('logout/', views.UserLogoutView.as_view(), name='logoutview'),
-
+    path('logout/', UserLogoutView.as_view(), name='logoutview'),
 ]
