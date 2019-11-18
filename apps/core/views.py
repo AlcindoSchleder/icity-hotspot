@@ -28,7 +28,7 @@ from .views_mixim import SuperUserRequiredMixin
 
 
 class MainPageView(View):
-    template_name = 'index'
+    template_name = 'index.html'
 
     def get(self, request):
         return render(request, self.template_name)
