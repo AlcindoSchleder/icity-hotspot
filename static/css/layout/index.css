@@ -11,7 +11,7 @@ body {
 	color: black;
 	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 	font-size: 17px;
-	font-weight: 300;	
+	font-weight: 300;
 }
 
 ul { padding: 0; margin: 0; }
@@ -42,10 +42,10 @@ a:focus {
 	vertical-align: top;
 }
 
-.cd-slider-nav li { 
+.cd-slider-nav li {
 	display: block;
 	float: none;
-	width: auto;	
+	width: auto;
 }
 
 .navbar-toggler {
@@ -80,14 +80,14 @@ button:focus { outline: none; }
 }
 
 /* Hero Slider */
-.tm-icon { 
+.tm-icon {
 	color: white;
 	margin-bottom: 30px;
 }
 
 .tm-site-name { margin-bottom: 35px; }
 
-.cd-hero-slider .tm-site-name { 
+.cd-hero-slider .tm-site-name {
 	font-size: 2em;
 	font-weight: 400;
 }
@@ -98,8 +98,8 @@ button:focus { outline: none; }
 
 .cd-hero-slider li:last-child { background-size: auto; }
 
-.tm-bg-white-translucent {	
-	background-color: rgba(255,255,255,0.75);	
+.tm-bg-white-translucent {
+	background-color: rgba(255,255,255,0.75);
 }
 
 .tm-bg-white-translucent p { color: black; }
@@ -115,20 +115,20 @@ button:focus { outline: none; }
 }
 .tm-textbox-1-col { max-width: 600px; }
 
-.cd-hero-slider .tm-text { 
+.cd-hero-slider .tm-text {
 	font-size: 1em;
-	line-height: 1.8; 
+	line-height: 1.8;
 }
 
-.tm-2-col-container {		
+.tm-2-col-container {
 	max-width: 860px;
 	margin: 0 auto;
 }
 
-.tm-2-col-textbox { 
-	max-width: 600px; 
-	-webkit-flex: 0 1 auto; 
-	    -ms-flex: 0 1 auto; 
+.tm-2-col-textbox {
+	max-width: 600px;
+	-webkit-flex: 0 1 auto;
+	    -ms-flex: 0 1 auto;
 	        flex: 0 1 auto; /* Fix flexbox in IE 10 bug https://philipwalton.com/articles/normalizing-cross-browser-flexbox-bugs/ */
 }
 
@@ -166,6 +166,7 @@ button:focus { outline: none; }
 .tm-footer {
     width: 100%;
     color: white;
+    font-size: 1.5rem;
     z-index: 1001;
     padding: 20px;
     display: -webkit-flex;
@@ -182,8 +183,8 @@ button:focus { outline: none; }
             justify-content: space-between;
 }
 
-.tm-copyright-text { 
-	margin-top: 20px; 
+.tm-copyright-text {
+	margin-top: 20px;
 	text-align: center;
 }
 
@@ -208,7 +209,7 @@ button:focus { outline: none; }
 .tm-img-gallery {
 	max-width: 860px;
 	margin: 10px auto 0;
-	width: 100%;		
+	width: 100%;
 }
 
 .tm-img {
@@ -245,15 +246,15 @@ button:focus { outline: none; }
 }
 
 .form-control:-moz-placeholder { /* Firefox 18- */
-   color: #000000;  
+   color: #000000;
 }
 
 .form-control::-moz-placeholder {  /* Firefox 19+ */
-   color: #000000;  
+   color: #000000;
 }
 
-.form-control:-ms-input-placeholder {  
-   color: #000000;  
+.form-control:-ms-input-placeholder {
+   color: #000000;
 }
 
 .tm-submit-btn {
@@ -270,7 +271,7 @@ button:focus { outline: none; }
 
 textarea { height: 168px; }
 
-/* Preloader 
+/* Preloader
 	https://ihatetomatoes.net/create-custom-preloading-screen/
 */
 /* ==========================================================================
@@ -286,7 +287,7 @@ textarea { height: 168px; }
 border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chrome, Opera 15+, Safari 5+ */ animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */ }
 
 @-webkit-keyframes spin {
-	0%   { 
+	0%   {
 		-webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */  /* IE 9 */
 		transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
 	}
@@ -296,7 +297,7 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 	}
 }
 @keyframes spin {
-	0%   { 
+	0%   {
 		-webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */  /* IE 9 */
 		transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
 	}
@@ -319,25 +320,25 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 /* Loaded */
 .loaded #loader-wrapper .loader-section.section-left {
 	-webkit-transform: translateX(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */  /* IE 9 */
-	transform: translateX(-100%);  /* Firefox 16+, IE 10+, Opera */  
+	transform: translateX(-100%);  /* Firefox 16+, IE 10+, Opera */
 	transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
 }
 
 .loaded #loader-wrapper .loader-section.section-right {
 	-webkit-transform: translateX(100%);  /* Chrome, Opera 15+, Safari 3.1+ */  /* IE 9 */
-	transform: translateX(100%);  /* Firefox 16+, IE 10+, Opera */  
+	transform: translateX(100%);  /* Firefox 16+, IE 10+, Opera */
 	transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
 }
 
 .loaded #loader {
-	opacity: 0;  
+	opacity: 0;
 	transition: all 0.3s ease-out;
 }
 .loaded #loader-wrapper {
 	visibility: hidden;
 
 	-webkit-transform: translateY(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */  /* IE 9 */
-	transform: translateY(-100%);  /* Firefox 16+, IE 10+, Opera */  
+	transform: translateY(-100%);  /* Firefox 16+, IE 10+, Opera */
 	transition: all 0.3s 1s ease-out;
 }
 
@@ -351,18 +352,18 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 
 /* Media Queries */
 @media only screen and (min-width: 720px) {
-	
-	.tm-footer { 
-		-webkit-flex-direction: row; 
-			-ms-flex-direction: row; 
-				flex-direction: row; 
+
+	.tm-footer {
+		-webkit-flex-direction: row;
+			-ms-flex-direction: row;
+				flex-direction: row;
 	}
 
 	.tm-copyright-text { margin-top: 0; }
 }
 
 @media only screen and (min-width: 465px) {
-	.cd-hero-slider .js-tm-page-content.tm-page-1 { margin-top: 100px; }	
+	.cd-hero-slider .js-tm-page-content.tm-page-1 { margin-top: 100px; }
 }
 
 @media only screen and (min-width: 768px) {
@@ -382,8 +383,8 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 		background-color: rgba(255,255,255,0.7);
 	}
 
-	.cd-slider-nav li {	
-		display: inline-block; 
+	.cd-slider-nav li {
+		display: inline-block;
 		width: auto;
 		height: auto;
 	}
@@ -397,23 +398,23 @@ border-top-color: #f9c922; -webkit-animation: spin 1.5s linear infinite; /* Chro
 	}
 
 	.cd-hero-slider .cd-full-width { padding-top: 0; }
-	
-	.tm-2-col-container { 
-		display: -webkit-flex; 
-		display: -ms-flexbox; 
-		display: flex; 
+
+	.tm-2-col-container {
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display: flex;
 	}
 
-	.tm-2-col-textbox {	
+	.tm-2-col-textbox {
 		margin-bottom: 0;
 		margin-right: 20px;
 	}
 
-	.tm-2-col-textbox:last-child { margin-right: 0;	}	
+	.tm-2-col-textbox:last-child { margin-right: 0;	}
 }
 
 @media only screen and (max-width: 991px) and (min-width: 769px) {
-	.cd-slider-nav a, 
+	.cd-slider-nav a,
 	.navbar-nav .nav-link {
 		font-size: 1em;
 		width: 95px;
