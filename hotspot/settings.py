@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from decouple import config
+from dj_database_url import parse as dburl
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'k=%u(k@fp3r18&x#6*1^0+3-80o)!j^fcrju4m+0w3q2_q5chd'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', True)
 
 ALLOWED_HOSTS = []
 
@@ -82,12 +84,19 @@ WSGI_APPLICATION = 'hotspot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+dbDev = config('DATABSE_DEV', default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'), cast=dburl)
+dbPrd = config('DATABASE_URL', default=dbDev, cast=dburl)
+dbUrl = dbDev if DEBUG else dbPrd
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dbUrl,
 }
+
+if not DEBUG:
+    DATABASES['default']['OPTIONS'] = {
+        'options': '-c search_path=hotspot'
+    }
+
 
 
 # Password validation
