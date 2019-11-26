@@ -2,7 +2,7 @@ function adjustHeightOfPage(pageNo) {
 
     // Get the page height
     var totalPageHeight = 15 + $('.cd-slider-nav').height()
-                            + $(".cd-hero-slider li:nth-of-type(" + pageNo + ") .js-tm-page-content").height() + 160
+                            + $(".cd-hero-slider li:nth-of-type(" + pageNo + ") .js-tm-page-content").height()
                             + $('.tm-footer').height();
 
     // Adjust layout based on page height and window height
@@ -44,7 +44,7 @@ $(window).on('load', function() {
 
     /* Browser resized
     -----------------------------------------*/
-    $( window ).resize(function() {
+    $( window ).on('resize', function() {
         var currentPageNo = $(".cd-hero-slider li.selected .js-tm-page-content").data("page-no");
         adjustHeightOfPage( currentPageNo );
     });
