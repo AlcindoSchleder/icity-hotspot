@@ -15,10 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+    path('login/', auth_views.LoginView, name='login'),
+    path('logout/', auth_views.LogoutView, name='logout'),
+    path('oauth/', include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
     path('', include('apps.core.urls', 'core')),
 ]
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'core'

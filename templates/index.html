@@ -7,26 +7,28 @@
             </div>
             <div class="comtainer-form-login text-center">
                 <div class="social-icons-login">
-                    <a href="#" class="login-social-link"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="login-social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="login-social-link"><i class="fab fa-github"></i></a>
-                    <a href="#" class="login-social-link"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="login-social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="login-social-link" disabled="disabled"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="login-social-link" disabled="disabled"><i class="fab fa-twitter"></i></a>
+                    <a href="{% url 'social:begin' 'github' %}" class="login-social-link" data-toogle="tooltip" title="Fazer login através do GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="login-social-link" disabled="disabled"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="login-social-link" disabled="disabled"><i class="fab fa-linkedin"></i></a>
                 </div>
                 <div class="clearfix"></div>
                 <div class="form-container text-center row">
                     <div class="col-xs-0 col-sm-2 col-md-3 col-lg-4 col-xl-4"></div>
                     <form class="form-login col-xs-12 col-sm-8 col-md-6 col-lg-4 col-xl-4" method="post" action="login.html">
                         <div class="form-group row">
-                            <label id="lbl-user" class="col-4 col-form-label text-right" for="ed-user">Usuário:</label>
+                            <label id="lbl-user" class="col-4 col-form-label text-right" for="ed-user">e-Mail:<span class="text-danger">*</span></label>
                             <div class="col-8">
-                                <input type="text" class="form-control" id="ed-user" />
+                                <input type="email" class="form-control" name="ed-user" id="ed-user" placeholder="seunome@exemplo.com.br"/>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label id="lbl-pwd" class="col-4 col-form-label text-right" for="ed-pwd">Senha:</label>
+                            <label id="lbl-pwd" class="col-4 col-form-label text-right" for="ed-pwd">Senha:<span class="text-danger">*</span></label>
                             <div class="col-8">
-                                <input type="password" class="form-control" id="ed-pwd" />
+                                <input type="password" class="form-control" name="ed-pwd" id="ed-pwd" />
                             </div>
                         </div>
                     </form>

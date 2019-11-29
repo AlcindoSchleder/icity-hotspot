@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.urls import path
+
 from .views import (
     MainPageView,
     UserFormView,
@@ -10,10 +11,10 @@ from .views import (
     UserLogoutView,
 )
 
+
 app_name = 'login'
 urlpatterns = [
     path('', MainPageView.as_view(), name='index'),
-    path('login/', UserFormView.as_view(), name='loginview'),
     # login/registrar/
     path(
         'registrar/',
