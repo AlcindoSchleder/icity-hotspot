@@ -1,4 +1,5 @@
     {% load staticfiles %}
+    <!-- Start Header Block -->
     <head>
         <meta charset="utf-8" />
         <!--[if IE]>
@@ -23,24 +24,55 @@
         <![endif]-->
     </head>
     <body class="container-fluid">
-        <!-- Navigation -->
         <header class="mainpage-nav">
-            <nav class="navbar navbar-expand-lg">
-                <a class="navbar-brand" href="#">
-                    <img class="page-logo img-fluid float-left" src="{% static '/img/logo.png' %}" alt="Logo i-City" width="90" height="50"/>
-                </a>
-                <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav float-right">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Login <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                    </ul>
+            <!-- Navigation -->
+            <nav class="navbar navbar-fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" href="#">
+                        <img class="page-logo img-fluid float-left" src="{% static '/img/logo.png' %}" alt="Logo i-City" width="90" height="50"/>
+                    </a>
+                    <button class="navbar-toggler btn btn-default-outline" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"><icon class="fas fa-ellipsis-v hamburger"></icon></span>
+                    </button>
+                    <div class="collapse navbar-collapse text-right" id="navbarNav">
+                        <ul class="nav navbar-right">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Login <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#">Disabled</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
+            <!-- End Navigation -->
+            <!-- Backgroud Carousel -->
+            <div id="backgroud-page" class="carousel slide" data-interval="10000" data-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    <!-- Slide One - Set the background image for this slide in the line below -->
+                    <div class="bg-page-item-01 carousel-item active">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h3 class="display-4">i-City Smart Environments</h3>
+                            <p class="lead">Conheça nossos Ambientes Iteligentes que proporcionam interatividade e conforto aos clientes.</p>
+                        </div>
+                    </div>
+                    <!-- Slide Two - Set the background image for this slide in the line below -->
+                    <div class="bg-page-item-02 carousel-item">
+                        <div class="carousel-caption d-none d-md-block">
+                          <h3 class="display-4">IoT - Internet das Coisas</h3>
+                          <p class="lead">Inteligência Artificial aplicada às Tecnologias para gerar resultados e estatísticas.</p>
+                        </div>
+                    </div>
+                    <!-- Slide Three - Set the background image for this slide in the line below -->
+                    <div class="bg-page-item-03 carousel-item">
+                        <div class="carousel-caption d-none d-md-block">
+                          <h3 class="display-4">Energia Renovável</h3>
+                          <p class="lead">Nossos projetos sempre levam em conta o uso de energia Renovável e Contínua.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Backgroud Carousel -->
         </header>
+        <!-- End Header Block -->

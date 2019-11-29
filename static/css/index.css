@@ -12,8 +12,8 @@ html {
 	font-weight: 300;
 }
 body {
-	background-color: #ffffff; /*#282F39*/
 	color: black;
+	background-color: #fff;
 }
 nav { padding: 0; margin: 0; }
 ul { padding: 0; margin: 0; }
@@ -33,27 +33,109 @@ a:focus {
     margin: 0;
     overflow: hide;
 }
-.navbar { padding: 0; margin: 0; }
-.navbar-brand { padding: 0; margin: 0; }
-
+/*----------------------------------------------
+        Header Page
+------------------------------------------------*/
 header {
     width: 100%;
     height: 10vh;
     margin: 0;
     padding 0;
+}
+header nav {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg,  rgba(255,255,255,0.94) 0%,
+                                        rgba(255,255,255,0.49) 40%,
+                                        rgba(204,204,204,0.0) 100%);
+    width: 100%;
+    text-align: right;
+    height: 10vh;
+}
+header nav .navbar-brand {
+    position: absolute;
+    left: 2rem;
+    float: left;
+}
+header nav .navbar-toggler {
+    position: absolute;
+    left: 86%;
+    display: block;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.1);
+    line-height: 1.8rem;
+
+}
+header nav .navbar-toggler:hover {
+    border: 2px solid #1566d1;
+}
+header nav .navbar-right:first-child {
+    margin-left: 60%;
+    border-botton: 1px solid red;
+}
+/*----------------------------------------------
+        Backgroud of Page
+------------------------------------------------*/
+header #backgroud-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -9;
     background-color: transparent;
 }
+.carousel-inner>.carousel-item {
+    -webkit-transition: -webkit-transform 1.2s ease-in-out !important;
+    -o-transition: -o-transform 1.2s ease-in-out !important;
+    transition: transform 1.2s ease-in-out !important;
+}
+.carousel-caption {
+   position: absolute;
+   top:65vh;
+}
+.carousel-item {
+    width: 100vw;
+    height: 100vh;
+    min-height: 350px;
+    color: #1566d1;
+    background: no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    z-index: -5;
+}
+.bg-page-item-01 {
+    background-image: url('../img/bg-01.jpg');
+}
+.bg-page-item-02 {
+    background-image: url('../img/bg-02.jpg');
+}
+.bg-page-item-03 {
+    background-image: url('../img/bg-03.jpg');
+}
+/*----------------------------------------------
+        Main Page
+------------------------------------------------*/
 #page-login {
     width: 100%;
-    height: 80vh;
+    height: 84vh;
 }
 #page-login .comtainer-form-login {
     margin: 10%;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255,255,255,0.7);
+    background: linear-gradient(90deg,  rgba(255,255,255,0.0) 10%,
+                                        rgba(255,255,255,0.5) 20%,
+                                        rgba(255,255,255,0.9) 30%,
+                                        rgba(255,255,255,0.5) 80%,
+                                        rgba(204,204,204,0.0) 100%);
 }
 #page-login .social-icons-login {
     padding: 1rem;
     font-size: 1.5rem;
+    z-index: 29;
 }
 #page-login .social-icons-login a {
     padding: 0.5rem;
@@ -77,9 +159,12 @@ header {
 .fa-linkedin {
     color: #00f;
 }
+/*----------------------------------------------
+        Footer Page
+------------------------------------------------*/
 footer {
     width: 100%;
-    height: 10vh;
+    height: 5vh;
     margin: 0;
     padding-left: 5%;
     padding-right: 5%;
