@@ -27,12 +27,14 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', True)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', 'localhost,127.0.0.1')
-ALLOWED_HOSTS = ALLOWED_HOSTS.split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', 'localhost,127.0.0.1', cast=Csv())
 
 # Social Login Apps Secrets
 SOCIAL_AUTH_GITHUB_KEY = config('SOCIAL_AUTH_GITHUB_KEY', '.')
 SOCIAL_AUTH_GITHUB_SECRET = config('SOCIAL_AUTH_GITHUB_SECRET', '.')
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'logedin'
 
 # Application definition
 
@@ -74,8 +76,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
-                'social_django.context_processors.backends',  # <--
-                'social_django.context_processors.login_redirect',  # <--
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

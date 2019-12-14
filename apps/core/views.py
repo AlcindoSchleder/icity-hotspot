@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, get_user_model
 from django.views.generic import View, FormView
@@ -20,7 +20,7 @@ from .app_forms import (
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-
+from .models import UserDevices, ServerDevices, TypeDevice, LogUserDevice
 
 from .views_mixim import SuperUserRequiredMixin
 
@@ -31,19 +31,14 @@ class MainPageView(View):
     template_name = 'index.html'
 
     def get(self, request):
+        """ Gravar os dados da Conexão do usuário se existir """
+        if request.GET:
+            a_user = UserDevices.objects.get(mac_address=request.GET['ga_cmac'])
+            if not a_user:
+                self.insert_user_device(request)
+            else:
+                self.log_user_device(a_user)
         return render(request, self.template_name)
-
-
-class UserFormView(View):
-    form_class = UserLoginForm
-    template_name = 'login/login.html'
-
-    def get(self, request):
-        form = self.form_class(None)
-
-        if request.user.is_authenticated:
-            return redirect('core:index')
-        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST or None)
@@ -59,6 +54,45 @@ class UserFormView(View):
 
         return render(request, self.template_name, {'form': form})
 
+    def insert_user_device(self, request) -> dict:
+        msg_err = ''
+        cod_err = 200
+        deviceParams = {}
+        if request.GET['ga_srvr']:
+            srvDevs = ServerDevices.objects.get(ga_srv=request.GET['ga_srvr'])
+            if srvDevs:
+                fkTypeDevices = srvDevs.fk_type_devices
+                tdevs = TypeDevice.objects.get(fk_type_devices=fkTypeDevices)
+                if tdevs.flag_approve:
+                    deviceParams = json.loads(tdevs.field_map_device_params)
+            else:
+                msg_err = 'Servidor não pertence à plataforma i-City!'
+                cod_err = 404
+                return {"status": cod_err, "messge": msg_err}
+        else:
+            msg_err = 'Servidor não pertence à plataforma i-City!'
+            cod_err = 404
+            return {"status": cod_err, "messge": msg_err}
+        user_devs = UserDevices()
+        if deviceParams:
+            for field in request.GET:
+                if field in deviceParams.keys():
+                    user_devs.__setattr__(field, deviceParams[field])
+        user_devs.fk_server_devices = ServerDevices.pk
+        user_devs.mac_address = request.GET['ga_cmac']
+        user_devs.save()
+        return {"status": cod_err, "messge": msg_err}
+
+    def log_user_device(self, user):
+        result = {
+            "msg_err": '',
+            "cod_err": 200,
+        }
+        logUser = LogUserDevice()
+        logUser.fk_user_devices.pk = user.pk
+        logUser.save()
+        return result
+
 
 class UserRegistrationFormView(SuperUserRequiredMixin, SuccessMessageMixin, FormView):
     form_class = UserRegistrationForm
@@ -67,7 +101,9 @@ class UserRegistrationFormView(SuperUserRequiredMixin, SuccessMessageMixin, Form
     success_message = "Novo usuário <b>%(username)s</b> criado com sucesso."
 
     def get_success_message(self, cleaned_data):
-        return self.success_message % dict(cleaned_data, username=cleaned_data['username'])
+        return self.success_message % dict(
+            cleaned_data, username=cleaned_data['username']
+        )
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(None)
@@ -207,3 +243,13 @@ class PasswordResetConfirmView(FormView):
                 error=u"O link usado para a troca de senha não é válido ou expirou, por favor tente enviar novamente."
             )
             return self.form_invalid(form)
+
+
+class UserLogindIn(View):
+    template_name = "login/trocar_senha.html"
+
+    def get(self, request):
+        # save core user here and set device to user
+        return render(request, self.template_name)
+
+

@@ -4,7 +4,7 @@ from django.urls import path
 
 from .views import (
     MainPageView,
-    UserFormView,
+    UserLoginForm,
     UserRegistrationFormView,
     ForgotPasswordView,
     PasswordResetConfirmView,
@@ -15,6 +15,7 @@ from .views import (
 app_name = 'login'
 urlpatterns = [
     path('', MainPageView.as_view(), name='index'),
+    # path('login/', UserView.as_view(), name='logoutview'),
     # login/registrar/
     path(
         'registrar/',

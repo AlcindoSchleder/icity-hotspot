@@ -72,7 +72,7 @@ header nav .navbar-toggler:hover {
     border: 2px solid #1566d1;
 }
 header nav .navbar-right:first-child {
-    margin-left: 60%;
+    margin-left: 50%;
     border-botton: 1px solid red;
 }
 /*----------------------------------------------
@@ -122,8 +122,25 @@ header #backgroud-page {
     width: 100%;
     height: 84vh;
 }
+#page-login .title {
+    background-color: rgba(0, 0, 0, 0.3);
+    background: linear-gradient(90deg,  rgba(0,0,0,0.0) 10%,
+                                        rgba(0,0,0,0.3) 20%,
+                                        rgba(0,0,0,0.5) 30%,
+                                        rgba(0,0,0,0.3) 80%,
+                                        rgba(0,0,0,0.0) 100%);
+}
+#page-login .title h2 {
+    font-size: 1.2rem;
+}
+#page-login .title p {
+    color: #e0e0e0;
+    padding: 0;
+    margin: 0 20% 0 20%;
+    font-size: 1rem;
+}
 #page-login .comtainer-form-login {
-    margin: 10%;
+    margin: 1rem;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
     background: rgba(255,255,255,0.7);
     background: linear-gradient(90deg,  rgba(255,255,255,0.0) 10%,
@@ -133,31 +150,76 @@ header #backgroud-page {
                                         rgba(204,204,204,0.0) 100%);
 }
 #page-login .social-icons-login {
-    padding: 1rem;
-    font-size: 1.5rem;
-    z-index: 29;
+    padding: 20px;
+    font-size: 4rem;
 }
-#page-login .social-icons-login a {
-    padding: 0.5rem;
-    width: 2rem;
-    height: 2rem;
-    background-color: rgba(0, 0, 0, 0.1);
+#page-login .social-icons-login .d-block {
+    margin: 10px 0 10px 10px;
+    border-radius: 5%;
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 6rem;
+}
+/*
+#page-login .social-icons-login .d-block a {
+    padding: 2%;
+}
+*/
+#page-login .social-icons-login .form-login {
+    font-size: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 5%;
 }
+#page-login .social-icons-login .form-login .form-group,
+#page-login .social-icons-login .form-login .form-control,
+#page-login .social-icons-login .form-login .col-form-label {
+    padding: 0 !impotant;
+    margin: 0 !impotant;
+}
+#page-login .social-icons-login .form-login .col-form-label {
+    font-size: 1.1rem;
+}
+#page-login .social-icons-login .form-login .send-btns {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+#page-login .social-icons-login .form-login .send-btns a {
+    float: left;
+}
+#page-login .social-icons-login .form-login .send-btns a:hover {
+    background-color: rgba(0,0,0,0.1)
+}
+#page-login .social-icons-login .form-login .send-btns input {
+    float: right;
+}
+.btn-login-title {
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
+}
 .fa-facebook {
+    padding: 2%;
     color: #1566d1;
+    background-color: rgba(21, 102, 209, 0.1);
 }
 .fa-twitter {
+    padding: 2%;
     color: #09add6;
+    background-color: rgba(9, 173, 214, 0.1);
 }
 .fa-github {
+    padding: 2%;
     color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 .fa-instagram {
+    padding: 2%;
     color: #f00;
+    background-color: rgba(255, 0, 0, 0.1);
 }
 .fa-linkedin {
+    padding: 2%;
     color: #00f;
+    background-color: rgba(0, 0, 255, 0.1);
 }
 /*----------------------------------------------
         Footer Page
