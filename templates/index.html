@@ -12,7 +12,7 @@
             <div class="comtainer-form-login text-center">
                 <div class="social-icons-login row">
                     <div class="d-block col-xs-12 col-sm-6 col-md-4 col-lg-1 col-xl-1">
-                        <a href="#" class="login-social-link" disabled="disabled">
+                        <a href="{% url 'social:begin' 'facebook' %}" class="login-social-link" disabled="disabled">
                             <i class="fab fa-facebook"></i>
                         </a>
                         <div class="btn-login-title">Facebook Login</div>
@@ -30,7 +30,7 @@
                         <div class="btn-login-title">GitHub Login</div>
                     </div>
                     <div class="d-block col-xs-12 col-sm-6 col-md-4 col-lg-1 col-xl-1">
-                        <a href="#" class="login-social-link" disabled="disabled">
+                        <a href="#" class="login-social-link" disabled="disabled" data-toogle="tooltip" title="Fazer login utilizando Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                         <div class="btn-login-title">Instagram Login</div>
